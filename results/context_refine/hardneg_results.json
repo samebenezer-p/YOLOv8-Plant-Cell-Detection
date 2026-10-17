@@ -1,0 +1,44 @@
+{
+  "classifier_path": "results/context_refine/classifier_hardneg.pt",
+  "config": {
+    "crop_size": 64,
+    "margin_ratio": 0.25,
+    "epochs": 30,
+    "lr": 0.001,
+    "fp_iou_thresh": 0.3,
+    "fp_mining": true
+  },
+  "train": {
+    "n_crops": 8545,
+    "n_pos": 4221,
+    "n_neg": 4324
+  },
+  "val": {
+    "n_val_crops": 1786,
+    "n_pos": 882,
+    "n_neg": 904,
+    "accuracy": 0.9994,
+    "precision": 0.9989,
+    "recall": 1.0,
+    "f1": 0.9994,
+    "auc_roc": 1.0,
+    "prob_mean_pos": 0.9982,
+    "prob_mean_neg": 0.0011,
+    "prob_std_pos": 0.0102,
+    "prob_std_neg": 0.0212,
+    "prob_histogram": {
+      "0.0-0.1": 902,
+      "0.1-0.2": 0,
+      "0.2-0.3": 0,
+      "0.3-0.4": 1,
+      "0.4-0.5": 0,
+      "0.5-0.6": 1,
+      "0.6-0.7": 0,
+      "0.7-0.8": 1,
+      "0.8-0.9": 0,
+      "0.9-1.0": 881
+    },
+    "cluster_near_0.5_0.6_count": 1,
+    "cluster_near_0.5_0.6_pct": 0.1
+  }
+}

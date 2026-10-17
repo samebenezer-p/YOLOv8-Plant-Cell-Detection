@@ -1,0 +1,110 @@
+[
+  {
+    "stage": "E1",
+    "precision": 0.997,
+    "recall": 0.9811,
+    "F1": 0.989,
+    "mAP50": 0.9783,
+    "mAP50_95": 0.921,
+    "vessel_AP50": 0.975,
+    "fiber_AP50": 0.985,
+    "parenchyma_AP50": 0.975,
+    "parenchyma_AP50_95": 0.8851
+  },
+  {
+    "stage": "E2",
+    "precision": 0.997,
+    "recall": 0.9852,
+    "F1": 0.9911,
+    "mAP50": 0.9883,
+    "mAP50_95": 0.9186,
+    "vessel_AP50": 0.985,
+    "fiber_AP50": 0.995,
+    "parenchyma_AP50": 0.985,
+    "parenchyma_AP50_95": 0.8942
+  },
+  {
+    "stage": "E3",
+    "precision": 0.9983,
+    "recall": 0.9856,
+    "F1": 0.9919,
+    "mAP50": 0.9883,
+    "mAP50_95": 0.9149,
+    "vessel_AP50": 0.985,
+    "fiber_AP50": 0.9948,
+    "parenchyma_AP50": 0.985,
+    "parenchyma_AP50_95": 0.8839
+  },
+  {
+    "stage": "E4",
+    "precision": 0.9967,
+    "recall": 0.9882,
+    "F1": 0.9924,
+    "mAP50": 0.9883,
+    "mAP50_95": 0.9296,
+    "vessel_AP50": 0.985,
+    "fiber_AP50": 0.995,
+    "parenchyma_AP50": 0.985,
+    "parenchyma_AP50_95": 0.8979
+  },
+  {
+    "stage": "E5a",
+    "precision": 0.9989,
+    "recall": 0.9849,
+    "F1": 0.9918,
+    "mAP50": 0.9883,
+    "mAP50_95": 0.9399,
+    "vessel_AP50": 0.985,
+    "fiber_AP50": 0.995,
+    "parenchyma_AP50": 0.985,
+    "parenchyma_AP50_95": 0.9091
+  },
+  {
+    "stage": "E5b",
+    "precision": 0.9982,
+    "recall": 0.9848,
+    "F1": 0.9914,
+    "mAP50": 0.9883,
+    "mAP50_95": 0.9392,
+    "vessel_AP50": 0.985,
+    "fiber_AP50": 0.995,
+    "parenchyma_AP50": 0.985,
+    "parenchyma_AP50_95": 0.9079
+  },
+  {
+    "stage": "E6",
+    "precision": 0.9981,
+    "recall": 0.9893,
+    "F1": 0.9937,
+    "mAP50": 0.9917,
+    "mAP50_95": 0.9388,
+    "vessel_AP50": 0.995,
+    "fiber_AP50": 0.995,
+    "parenchyma_AP50": 0.985,
+    "parenchyma_AP50_95": 0.9082
+  },
+  {
+    "stage": "E7",
+    "precision": 0.997,
+    "recall": 0.9811,
+    "F1": 0.989,
+    "mAP50": 0.9783,
+    "mAP50_95": 0.921,
+    "vessel_AP50": 0.975,
+    "fiber_AP50": 0.985,
+    "parenchyma_AP50": 0.975,
+    "parenchyma_AP50_95": 0.8851
+  },
+  {
+    "stage": "E8 (smoke)",
+    "precision": 0.0,
+    "recall": 0.0,
+    "F1": 0.0,
+    "mAP50": 0.0,
+    "mAP50_95": 0.0,
+    "vessel_AP50": 0.0,
+    "fiber_AP50": 0.0,
+    "parenchyma_AP50": 0.0,
+    "parenchyma_AP50_95": 0.0
+  }
+]

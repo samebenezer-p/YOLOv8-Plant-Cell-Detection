@@ -1,0 +1,46 @@
+# =============================================================================
+# E7: Deformable Convolution Ablation (Optional)
+# =============================================================================
+# Replaces selected Conv layers with DCNv2 for adaptive receptive fields.
+
+experiment_name: e7_dcn_optional
+experiment_stage: E7
+description: "Optional deformable convolution ablation"
+
+model_variant: yolov8n.pt
+pretrained: true
+num_classes: 3
+class_names: {0: vessel, 1: fiber, 2: parenchyma}
+
+# --- Fairness Protocol (identical to E1) ---
+data_yaml: data.yaml
+imgsz: 512
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+epochs: 100
+batch_size: 16
+conf_thresh: 0.25
+iou_thresh: 0.45
+seeds: [42]
+single_seed_note: true
+augmentation:
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  fliplr: 0.5
+  flipud: 0.5
+  mosaic: 1.0
+  mixup: 0.0
+use_wandb: false
+tensorboard: true
+project_dir: results
+
+# --- E7-specific parameters ---
+dcn:
+  enabled: true
+  layer_indices: null            # null = auto (last 2 C2f blocks)
+  version: "v2"                  # "v1" or "v2"

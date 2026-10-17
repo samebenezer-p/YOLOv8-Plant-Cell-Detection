@@ -1,0 +1,64 @@
+# =============================================================================
+# E8: Full Combined Architecture Model
+# =============================================================================
+# Combines:
+# 1. P2 Detection Head (stride 4, 4-scale detector: P2/P3/P4/P5)
+# 2. Bidirectional Feature Fusion Neck
+# 3. Auxiliary Boundary Prediction Head (attached directly to P2-level feature)
+# 4. Best IoU loss (Shape IoU)
+# 5. DCN: disabled (per specification)
+# 6. 2nd-stage Parenchyma Context Refinement post-hoc classifier
+
+experiment_name: e8_full_model
+experiment_stage: E8
+description: "Full combined model: P2 Head + Fusion Neck + P2 Boundary Head + Shape IoU + Parenchyma Refiner"
+
+model_variant: yolov8n-p2.yaml
+pretrained: true
+num_classes: 3
+class_names: {0: vessel, 1: fiber, 2: parenchyma}
+
+# --- Fairness Protocol ---
+data_yaml: data.yaml
+imgsz: 512
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+epochs: 100
+conf_thresh: 0.25
+iou_thresh: 0.45
+seeds: [42]
+single_seed_note: true
+
+# --- Active Components ---
+p2_head:
+  enabled: true
+
+fusion_neck:
+  enabled: true
+  num_repeats: 2
+  out_channels: 128
+
+boundary_head:
+  enabled: true
+  attach_level: "P2"
+  in_channels: 32
+  hidden_channels: 32
+  alpha: 0.5
+
+loss:
+  type: "shape_iou"
+
+dcn:
+  enabled: false
+
+context_refinement:
+  enabled: true
+  classifier_weights: "results/context_refine/classifier.pt"
+  crop_size: 64
+  margin_ratio: 0.25
+  threshold: 0.50
+
+use_wandb: false
+tensorboard: true
+project_dir: results

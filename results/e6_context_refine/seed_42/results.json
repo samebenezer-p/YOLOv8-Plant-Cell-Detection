@@ -1,0 +1,125 @@
+{
+  "experiment_name": "e6_context_refine",
+  "experiment_stage": "E6",
+  "seed": 42,
+  "model_variant": "yolov8n.pt",
+  "training": {
+    "experiment_name": "e6_context_refine/seed_42",
+    "model_variant": "yolov8n.pt",
+    "epochs": 100,
+    "batch_size": 4,
+    "best_weights": null,
+    "save_dir": "results\\e6_context_refine\\seed_42"
+  },
+  "evaluation": {
+    "precision": 0.998116922275242,
+    "recall": 0.9893154083202931,
+    "mAP50": 0.9916593965830608,
+    "mAP50_95": 0.9388225119997006,
+    "F1": 0.9936966761693312,
+    "per_class": {
+      "vessel": {
+        "AP50": 0.995,
+        "AP50_95": 0.9641204019133369,
+        "precision": 1.0,
+        "recall": 0.9910714285714286
+      },
+      "fiber": {
+        "AP50": 0.995,
+        "AP50_95": 0.944138161982033,
+        "precision": 0.9965317919075144,
+        "recall": 0.9919447640966629
+      },
+      "parenchyma": {
+        "AP50": 0.9849781897491822,
+        "AP50_95": 0.9082089721037313,
+        "precision": 0.9978189749182116,
+        "recall": 0.984930032292788
+      }
+    },
+    "small_object_AP50": null,
+    "split": "test",
+    "conf_thresh": 0.25,
+    "iou_thresh": 0.45,
+    "confusion_matrix": [
+      [
+        222.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        862.0,
+        0.0,
+        3.0
+      ],
+      [
+        0.0,
+        0.0,
+        916.0,
+        1.0
+      ],
+      [
+        2.0,
+        7.0,
+        13.0,
+        0.0
+      ]
+    ]
+  },
+  "benchmark": {},
+  "config": {
+    "experiment_name": "e6_context_refine",
+    "experiment_stage": "E6",
+    "description": "Parenchyma Context Refinement Classifier",
+    "model_variant": "yolov8n.pt",
+    "pretrained": true,
+    "num_classes": 3,
+    "class_names": {
+      "0": "vessel",
+      "1": "fiber",
+      "2": "parenchyma"
+    },
+    "data_yaml": "data.yaml",
+    "imgsz": 640,
+    "optimizer": "AdamW",
+    "lr0": 0.001,
+    "lrf": 0.01,
+    "epochs": 100,
+    "conf_thresh": 0.25,
+    "iou_thresh": 0.45,
+    "seeds": [
+      42
+    ],
+    "single_seed_note": true,
+    "batch_size": 4,
+    "accumulate": 4,
+    "amp": true,
+    "cache": false,
+    "workers": 2,
+    "close_mosaic": 10,
+    "patience": 20,
+    "augmentation": {
+      "hsv_h": 0.015,
+      "hsv_s": 0.7,
+      "hsv_v": 0.4,
+      "degrees": 0.0,
+      "translate": 0.1,
+      "scale": 0.5,
+      "fliplr": 0.5,
+      "flipud": 0.5,
+      "mosaic": 1.0,
+      "mixup": 0.0
+    },
+    "use_wandb": false,
+    "tensorboard": true,
+    "project_dir": "results",
+    "refinement": {
+      "enabled": true,
+      "margin_ratio": 0.25,
+      "crop_size": 64,
+      "backbone": "mobilenetv3_small"
+    }
+  }
+}

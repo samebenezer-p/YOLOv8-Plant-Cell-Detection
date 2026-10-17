@@ -1,0 +1,122 @@
+{
+  "experiment_name": "e5a_shapeiou",
+  "experiment_stage": "E5a",
+  "seed": 42,
+  "model_variant": "yolov8n.pt",
+  "training": {
+    "experiment_name": "e5a_shapeiou/seed_42",
+    "model_variant": "yolov8n.pt",
+    "epochs": 100,
+    "batch_size": 4,
+    "best_weights": null,
+    "save_dir": "results\\e5a_shapeiou\\seed_42"
+  },
+  "evaluation": {
+    "precision": 0.9988924399642265,
+    "recall": 0.9848792089172381,
+    "mAP50": 0.9883223804045057,
+    "mAP50_95": 0.9398552667421697,
+    "F1": 0.9918363301744727,
+    "per_class": {
+      "vessel": {
+        "AP50": 0.985,
+        "AP50_95": 0.9667757936740845,
+        "precision": 1.0,
+        "recall": 0.9821428571428571
+      },
+      "fiber": {
+        "AP50": 0.995,
+        "AP50_95": 0.9436841750171961,
+        "precision": 0.9994573872179546,
+        "recall": 0.9907940161104718
+      },
+      "parenchyma": {
+        "AP50": 0.9849671412135172,
+        "AP50_95": 0.9091058315352288,
+        "precision": 0.997219932674725,
+        "recall": 0.9817007534983854
+      }
+    },
+    "small_object_AP50": null,
+    "split": "test",
+    "conf_thresh": 0.25,
+    "iou_thresh": 0.45,
+    "confusion_matrix": [
+      [
+        220.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        863.0,
+        2.0,
+        3.0
+      ],
+      [
+        0.0,
+        0.0,
+        916.0,
+        3.0
+      ],
+      [
+        4.0,
+        6.0,
+        11.0,
+        0.0
+      ]
+    ]
+  },
+  "benchmark": {},
+  "config": {
+    "experiment_name": "e5a_shapeiou",
+    "experiment_stage": "E5a",
+    "description": "Shape IoU Bounding Box Regression Loss",
+    "model_variant": "yolov8n.pt",
+    "pretrained": true,
+    "num_classes": 3,
+    "class_names": {
+      "0": "vessel",
+      "1": "fiber",
+      "2": "parenchyma"
+    },
+    "data_yaml": "data.yaml",
+    "imgsz": 640,
+    "optimizer": "AdamW",
+    "lr0": 0.001,
+    "lrf": 0.01,
+    "epochs": 100,
+    "conf_thresh": 0.25,
+    "iou_thresh": 0.45,
+    "seeds": [
+      42
+    ],
+    "single_seed_note": true,
+    "batch_size": 4,
+    "accumulate": 4,
+    "amp": true,
+    "cache": false,
+    "workers": 2,
+    "close_mosaic": 10,
+    "patience": 20,
+    "augmentation": {
+      "hsv_h": 0.015,
+      "hsv_s": 0.7,
+      "hsv_v": 0.4,
+      "degrees": 0.0,
+      "translate": 0.1,
+      "scale": 0.5,
+      "fliplr": 0.5,
+      "flipud": 0.5,
+      "mosaic": 1.0,
+      "mixup": 0.0
+    },
+    "use_wandb": false,
+    "tensorboard": true,
+    "project_dir": "results",
+    "loss": {
+      "type": "shape_iou"
+    }
+  }
+}

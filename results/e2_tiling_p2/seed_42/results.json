@@ -1,0 +1,129 @@
+{
+  "experiment_name": "e2_tiling_p2",
+  "experiment_stage": "E2",
+  "seed": 42,
+  "model_variant": "yolov8n.pt",
+  "training": {
+    "experiment_name": "e2_tiling_p2/seed_42",
+    "model_variant": "yolov8n-p2",
+    "epochs": 100,
+    "batch_size": 4,
+    "best_weights": null,
+    "save_dir": "results\\e2_tiling_p2\\seed_42"
+  },
+  "evaluation": {
+    "precision": 0.9969837395914224,
+    "recall": 0.9852380176721717,
+    "mAP50": 0.988311032329619,
+    "mAP50_95": 0.9185981399270339,
+    "F1": 0.9910760787959818,
+    "per_class": {
+      "vessel": {
+        "AP50": 0.985,
+        "AP50_95": 0.951729788014347,
+        "precision": 1.0,
+        "recall": 0.9821428571428571
+      },
+      "fiber": {
+        "AP50": 0.9949768250289687,
+        "AP50_95": 0.9098149055330873,
+        "precision": 0.9942263279445728,
+        "recall": 0.9907940161104718
+      },
+      "parenchyma": {
+        "AP50": 0.9849562719598887,
+        "AP50_95": 0.8942497262336676,
+        "precision": 0.9967248908296943,
+        "recall": 0.9827771797631862
+      }
+    },
+    "small_object_AP50": null,
+    "split": "test",
+    "conf_thresh": 0.25,
+    "iou_thresh": 0.45,
+    "confusion_matrix": [
+      [
+        220.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        862.0,
+        0.0,
+        4.0
+      ],
+      [
+        0.0,
+        0.0,
+        913.0,
+        3.0
+      ],
+      [
+        4.0,
+        7.0,
+        16.0,
+        0.0
+      ]
+    ]
+  },
+  "benchmark": {},
+  "config": {
+    "experiment_name": "e2_tiling_p2",
+    "experiment_stage": "E2",
+    "description": "Tiling with P2 detection head for small-object improvement",
+    "model_variant": "yolov8n.pt",
+    "pretrained": true,
+    "num_classes": 3,
+    "class_names": {
+      "0": "vessel",
+      "1": "fiber",
+      "2": "parenchyma"
+    },
+    "data_yaml": "data.yaml",
+    "imgsz": 640,
+    "optimizer": "AdamW",
+    "lr0": 0.001,
+    "lrf": 0.01,
+    "epochs": 100,
+    "conf_thresh": 0.25,
+    "iou_thresh": 0.45,
+    "seeds": [
+      42
+    ],
+    "single_seed_note": true,
+    "batch_size": 4,
+    "accumulate": 4,
+    "amp": true,
+    "cache": false,
+    "workers": 2,
+    "close_mosaic": 10,
+    "patience": 20,
+    "augmentation": {
+      "hsv_h": 0.015,
+      "hsv_s": 0.7,
+      "hsv_v": 0.4,
+      "degrees": 0.0,
+      "translate": 0.1,
+      "scale": 0.5,
+      "fliplr": 0.5,
+      "flipud": 0.5,
+      "mosaic": 1.0,
+      "mixup": 0.0
+    },
+    "use_wandb": false,
+    "tensorboard": true,
+    "project_dir": "results",
+    "tiling": {
+      "enabled": true,
+      "tile_size": 640,
+      "overlap": 0.25,
+      "min_visible_fraction": 0.3,
+      "cross_tile_nms_iou": 0.45
+    },
+    "p2_head": {
+      "enabled": true
+    }
+  }
+}

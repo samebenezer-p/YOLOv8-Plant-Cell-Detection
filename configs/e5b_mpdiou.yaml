@@ -1,0 +1,52 @@
+# =============================================================================
+# E5b: MPDIoU Loss
+# =============================================================================
+
+experiment_name: e5b_mpdiou
+experiment_stage: E5b
+description: "Minimum Point Distance IoU Loss"
+
+model_variant: yolov8n.pt
+pretrained: true
+num_classes: 3
+class_names: {0: vessel, 1: fiber, 2: parenchyma}
+
+# --- Fairness Protocol ---
+data_yaml: data.yaml
+imgsz: 640
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+epochs: 100
+conf_thresh: 0.25
+iou_thresh: 0.45
+seeds: [42]
+single_seed_note: true
+
+# --- Memory-safe settings for 4GB VRAM ---
+batch_size: 4
+accumulate: 4
+amp: true
+cache: false
+workers: 2
+close_mosaic: 10
+patience: 20
+
+augmentation:
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  fliplr: 0.5
+  flipud: 0.5
+  mosaic: 1.0
+  mixup: 0.0
+use_wandb: false
+tensorboard: true
+project_dir: results
+
+# --- E5-specific parameters ---
+loss:
+  type: "mpdiou"

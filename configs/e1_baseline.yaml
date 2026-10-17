@@ -1,0 +1,63 @@
+# =============================================================================
+# E1: Stock YOLOv8 Baseline
+# =============================================================================
+# This is the foundation experiment. All subsequent ablation stages (E2-E7)
+# inherit the fairness-protocol parameters below, varying only their
+# component under test.
+
+experiment_name: e1_baseline
+experiment_stage: E1
+description: "Stock YOLOv8n baseline — no architectural modifications"
+
+# ---------------------------------------------------------------------------
+# Model
+# ---------------------------------------------------------------------------
+model_variant: yolov8n.pt
+pretrained: true
+num_classes: 3
+class_names:
+  0: vessel
+  1: fiber
+  2: parenchyma
+
+# ---------------------------------------------------------------------------
+# Fairness Protocol (SHARED across E1–E7)
+# All ablation configs MUST use identical values for these fields.
+# ---------------------------------------------------------------------------
+data_yaml: data.yaml
+imgsz: 512
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+epochs: 100
+batch_size: 16
+conf_thresh: 0.25
+iou_thresh: 0.45
+
+# ---------------------------------------------------------------------------
+# Seeds (multi-seed support)
+# ---------------------------------------------------------------------------
+seeds: [42]
+single_seed_note: true   # Flag: results are single-seed only
+
+# ---------------------------------------------------------------------------
+# Augmentation
+# ---------------------------------------------------------------------------
+augmentation:
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  fliplr: 0.5
+  flipud: 0.5
+  mosaic: 1.0
+  mixup: 0.0
+
+# ---------------------------------------------------------------------------
+# Experiment tracking
+# ---------------------------------------------------------------------------
+use_wandb: false
+tensorboard: true
+project_dir: results

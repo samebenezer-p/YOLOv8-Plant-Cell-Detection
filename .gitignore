@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Ultralytics & Weights
+*.pt
+runs/
+*.cache
+
+# IDE
+.vscode/
+.idea/

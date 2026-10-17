@@ -1,0 +1,63 @@
+# =============================================================================
+# E2: Tiling + P2 Detection Head
+# =============================================================================
+# Adds overlapping tiling for high-res input and a P2 (stride-4) detection
+# head for improved small-object sensitivity.
+# Architecture: yolov8n-p2.yaml (4-head: P2/P3/P4/P5)
+
+experiment_name: e2_tiling_p2
+experiment_stage: E2
+description: "Tiling with P2 detection head for small-object improvement"
+
+# Model (modified architecture — uses built-in yolov8-p2.yaml)
+model_variant: yolov8n.pt   # base weights; architecture overridden to P2 at runtime
+pretrained: true
+num_classes: 3
+class_names: {0: vessel, 1: fiber, 2: parenchyma}
+
+# --- Fairness Protocol (identical to E1) ---
+data_yaml: data.yaml
+imgsz: 640
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+epochs: 100
+conf_thresh: 0.25
+iou_thresh: 0.45
+seeds: [42]
+single_seed_note: true
+
+# --- Memory-safe settings for 4GB VRAM ---
+batch_size: 4
+accumulate: 4           # effective batch size = 4 * 4 = 16
+amp: true               # mixed precision
+cache: false            # no RAM caching
+workers: 2              # reduced worker count
+close_mosaic: 10        # close mosaic for final 10 epochs
+patience: 20            # early stopping patience
+
+augmentation:
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  fliplr: 0.5
+  flipud: 0.5
+  mosaic: 1.0
+  mixup: 0.0
+use_wandb: false
+tensorboard: true
+project_dir: results
+
+# --- E2-specific parameters ---
+tiling:
+  enabled: true
+  tile_size: 640
+  overlap: 0.25
+  min_visible_fraction: 0.3
+  cross_tile_nms_iou: 0.45
+
+p2_head:
+  enabled: true

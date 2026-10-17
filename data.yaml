@@ -1,0 +1,9 @@
+path: .
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: vessel
+  1: fiber
+  2: parenchyma
