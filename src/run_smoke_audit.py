@@ -181,6 +181,8 @@ if __name__ == "__main__":
     run_stage_smoke("E7", "yolov8n.pt")
 
     import json
-    with open("runs/smoke/smoke_summary.json", "w") as f:
+    out_path = Path("runs/smoke/smoke_summary.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w") as f:
         json.dump(SMOKE_RESULTS, f, indent=2)
     print("\nALL SMOKE TESTS COMPLETED SUCCESSFULLY!")
