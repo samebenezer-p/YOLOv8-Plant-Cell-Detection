@@ -1,0 +1,604 @@
+[
+  {
+    "image": "xylem_0212.jpg",
+    "box": [
+      181.8,
+      310.6,
+      208.2,
+      335.8
+    ],
+    "conf": 0.9502,
+    "prob": 0.4993,
+    "gt_iou": 0.9576,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 4
+  },
+  {
+    "image": "xylem_0214.jpg",
+    "box": [
+      429.6,
+      332.6,
+      452.5,
+      351.4
+    ],
+    "conf": 0.9104,
+    "prob": 0.4939,
+    "gt_iou": 0.9468,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 7
+  },
+  {
+    "image": "xylem_0216.jpg",
+    "box": [
+      122.3,
+      28.1,
+      144.4,
+      51.7
+    ],
+    "conf": 0.8014,
+    "prob": 0.0003,
+    "gt_iou": 0.9038,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 18
+  },
+  {
+    "image": "xylem_0219.jpg",
+    "box": [
+      115.4,
+      198.0,
+      137.4,
+      225.0
+    ],
+    "conf": 0.9578,
+    "prob": 0.0274,
+    "gt_iou": 0.9371,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 11
+  },
+  {
+    "image": "xylem_0219.jpg",
+    "box": [
+      263.5,
+      13.5,
+      286.4,
+      38.4
+    ],
+    "conf": 0.8613,
+    "prob": 0.0274,
+    "gt_iou": 0.8785,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 4
+  },
+  {
+    "image": "xylem_0222.jpg",
+    "box": [
+      418.8,
+      255.9,
+      444.6,
+      285.2
+    ],
+    "conf": 0.9494,
+    "prob": 0.0001,
+    "gt_iou": 0.8743,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 15
+  },
+  {
+    "image": "xylem_0222.jpg",
+    "box": [
+      81.0,
+      262.3,
+      101.4,
+      282.1
+    ],
+    "conf": 0.9191,
+    "prob": 0.2231,
+    "gt_iou": 0.929,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 9
+  },
+  {
+    "image": "xylem_0222.jpg",
+    "box": [
+      424.7,
+      384.2,
+      453.2,
+      406.7
+    ],
+    "conf": 0.7976,
+    "prob": 0.0007,
+    "gt_iou": 0.9616,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 0
+  },
+  {
+    "image": "xylem_0223.jpg",
+    "box": [
+      393.9,
+      220.1,
+      413.1,
+      235.8
+    ],
+    "conf": 0.9041,
+    "prob": 0.3682,
+    "gt_iou": 0.9206,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 9
+  },
+  {
+    "image": "xylem_0223.jpg",
+    "box": [
+      441.8,
+      26.5,
+      466.1,
+      47.3
+    ],
+    "conf": 0.8746,
+    "prob": 0.4665,
+    "gt_iou": 0.9142,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 25
+  },
+  {
+    "image": "xylem_0227.jpg",
+    "box": [
+      348.5,
+      214.8,
+      373.7,
+      238.3
+    ],
+    "conf": 0.9469,
+    "prob": 0.0094,
+    "gt_iou": 0.9391,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 7
+  },
+  {
+    "image": "xylem_0227.jpg",
+    "box": [
+      165.4,
+      427.0,
+      182.1,
+      446.7
+    ],
+    "conf": 0.9293,
+    "prob": 0.1224,
+    "gt_iou": 0.8993,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 2
+  },
+  {
+    "image": "xylem_0227.jpg",
+    "box": [
+      169.5,
+      186.5,
+      195.1,
+      203.2
+    ],
+    "conf": 0.8995,
+    "prob": 0.4342,
+    "gt_iou": 0.9536,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 18
+  },
+  {
+    "image": "xylem_0227.jpg",
+    "box": [
+      198.1,
+      442.4,
+      225.6,
+      469.5
+    ],
+    "conf": 0.8945,
+    "prob": 0.0,
+    "gt_iou": 0.9485,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 12
+  },
+  {
+    "image": "xylem_0228.jpg",
+    "box": [
+      97.4,
+      143.0,
+      118.8,
+      165.0
+    ],
+    "conf": 0.8963,
+    "prob": 0.0324,
+    "gt_iou": 0.9548,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 14
+  },
+  {
+    "image": "xylem_0230.jpg",
+    "box": [
+      267.9,
+      309.1,
+      282.2,
+      327.3
+    ],
+    "conf": 0.8064,
+    "prob": 0.0137,
+    "gt_iou": 0.9096,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 3
+  },
+  {
+    "image": "xylem_0231.jpg",
+    "box": [
+      211.2,
+      275.1,
+      235.5,
+      296.1
+    ],
+    "conf": 0.9373,
+    "prob": 0.1894,
+    "gt_iou": 0.934,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 11
+  },
+  {
+    "image": "xylem_0233.jpg",
+    "box": [
+      227.8,
+      355.7,
+      254.6,
+      382.9
+    ],
+    "conf": 0.9365,
+    "prob": 0.0471,
+    "gt_iou": 0.964,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 23
+  },
+  {
+    "image": "xylem_0233.jpg",
+    "box": [
+      294.2,
+      288.0,
+      316.2,
+      303.6
+    ],
+    "conf": 0.8071,
+    "prob": 0.0014,
+    "gt_iou": 0.8642,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 28
+  },
+  {
+    "image": "xylem_0235.jpg",
+    "box": [
+      325.4,
+      187.8,
+      339.1,
+      210.6
+    ],
+    "conf": 0.8083,
+    "prob": 0.0019,
+    "gt_iou": 0.8737,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 20
+  },
+  {
+    "image": "xylem_0236.jpg",
+    "box": [
+      246.2,
+      237.4,
+      269.8,
+      259.0
+    ],
+    "conf": 0.9509,
+    "prob": 0.0003,
+    "gt_iou": 0.9354,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 18
+  },
+  {
+    "image": "xylem_0236.jpg",
+    "box": [
+      259.3,
+      299.7,
+      279.4,
+      316.9
+    ],
+    "conf": 0.6834,
+    "prob": 0.0,
+    "gt_iou": 0.8962,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 12
+  },
+  {
+    "image": "xylem_0237.jpg",
+    "box": [
+      45.0,
+      172.0,
+      71.9,
+      199.0
+    ],
+    "conf": 0.9563,
+    "prob": 0.0141,
+    "gt_iou": 0.9067,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 26
+  },
+  {
+    "image": "xylem_0237.jpg",
+    "box": [
+      224.2,
+      271.5,
+      247.3,
+      293.5
+    ],
+    "conf": 0.9549,
+    "prob": 0.1236,
+    "gt_iou": 0.9445,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 4
+  },
+  {
+    "image": "xylem_0237.jpg",
+    "box": [
+      69.6,
+      148.6,
+      90.7,
+      171.7
+    ],
+    "conf": 0.9369,
+    "prob": 0.1929,
+    "gt_iou": 0.9504,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 20
+  },
+  {
+    "image": "xylem_0237.jpg",
+    "box": [
+      323.2,
+      367.3,
+      349.5,
+      388.3
+    ],
+    "conf": 0.9105,
+    "prob": 0.0084,
+    "gt_iou": 0.9683,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 13
+  },
+  {
+    "image": "xylem_0238.jpg",
+    "box": [
+      428.3,
+      238.7,
+      451.0,
+      262.3
+    ],
+    "conf": 0.781,
+    "prob": 0.0,
+    "gt_iou": 0.8445,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 1
+  },
+  {
+    "image": "xylem_0239.jpg",
+    "box": [
+      397.9,
+      273.4,
+      425.0,
+      292.6
+    ],
+    "conf": 0.8714,
+    "prob": 0.0,
+    "gt_iou": 0.9083,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 25
+  },
+  {
+    "image": "xylem_0239.jpg",
+    "box": [
+      286.4,
+      484.4,
+      302.4,
+      497.9
+    ],
+    "conf": 0.7376,
+    "prob": 0.0664,
+    "gt_iou": 0.8786,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 12
+  },
+  {
+    "image": "xylem_0240.jpg",
+    "box": [
+      202.5,
+      180.9,
+      218.2,
+      197.7
+    ],
+    "conf": 0.9828,
+    "prob": 0.4462,
+    "gt_iou": 0.8669,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 23
+  },
+  {
+    "image": "xylem_0240.jpg",
+    "box": [
+      44.4,
+      386.3,
+      67.3,
+      401.7
+    ],
+    "conf": 0.9383,
+    "prob": 0.0235,
+    "gt_iou": 0.8723,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 8
+  },
+  {
+    "image": "xylem_0240.jpg",
+    "box": [
+      399.6,
+      272.2,
+      418.9,
+      301.3
+    ],
+    "conf": 0.9208,
+    "prob": 0.1516,
+    "gt_iou": 0.9608,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 14
+  },
+  {
+    "image": "xylem_0240.jpg",
+    "box": [
+      20.0,
+      425.2,
+      41.3,
+      448.6
+    ],
+    "conf": 0.9148,
+    "prob": 0.0003,
+    "gt_iou": 0.9631,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 5
+  },
+  {
+    "image": "xylem_0240.jpg",
+    "box": [
+      398.7,
+      254.4,
+      416.1,
+      270.9
+    ],
+    "conf": 0.8017,
+    "prob": 0.0002,
+    "gt_iou": 0.8482,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 12
+  },
+  {
+    "image": "xylem_0244.jpg",
+    "box": [
+      226.7,
+      191.6,
+      247.1,
+      206.6
+    ],
+    "conf": 0.8954,
+    "prob": 0.197,
+    "gt_iou": 0.9387,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 0
+  },
+  {
+    "image": "xylem_0248.jpg",
+    "box": [
+      359.3,
+      113.6,
+      382.8,
+      139.9
+    ],
+    "conf": 0.9706,
+    "prob": 0.0042,
+    "gt_iou": 0.9329,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 0
+  },
+  {
+    "image": "xylem_0248.jpg",
+    "box": [
+      270.3,
+      130.8,
+      296.8,
+      151.0
+    ],
+    "conf": 0.9421,
+    "prob": 0.118,
+    "gt_iou": 0.9518,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 16
+  },
+  {
+    "image": "xylem_0248.jpg",
+    "box": [
+      150.2,
+      49.4,
+      175.9,
+      62.6
+    ],
+    "conf": 0.9407,
+    "prob": 0.0085,
+    "gt_iou": 0.9434,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 1
+  },
+  {
+    "image": "xylem_0248.jpg",
+    "box": [
+      450.6,
+      288.4,
+      470.0,
+      306.6
+    ],
+    "conf": 0.9365,
+    "prob": 0.4094,
+    "gt_iou": 0.9641,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 13
+  },
+  {
+    "image": "xylem_0248.jpg",
+    "box": [
+      221.1,
+      366.2,
+      241.0,
+      383.1
+    ],
+    "conf": 0.8896,
+    "prob": 0.0004,
+    "gt_iou": 0.9136,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 5
+  },
+  {
+    "image": "xylem_0249.jpg",
+    "box": [
+      97.6,
+      263.7,
+      122.5,
+      287.8
+    ],
+    "conf": 0.9433,
+    "prob": 0.0017,
+    "gt_iou": 0.9244,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 5
+  },
+  {
+    "image": "xylem_0249.jpg",
+    "box": [
+      459.3,
+      113.0,
+      478.3,
+      140.7
+    ],
+    "conf": 0.942,
+    "prob": 0.0109,
+    "gt_iou": 0.9421,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 12
+  },
+  {
+    "image": "xylem_0249.jpg",
+    "box": [
+      85.3,
+      66.9,
+      112.7,
+      79.9
+    ],
+    "conf": 0.8051,
+    "prob": 0.1691,
+    "gt_iou": 0.8806,
+    "is_primary_tp_at_0_5": true,
+    "gt_idx": 20
+  }
+]

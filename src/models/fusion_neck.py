@@ -251,3 +251,151 @@ def inject_fusion_neck(detection_model: nn.Module, num_repeats: int = 2, out_cha
     detection_model.model = nn.Sequential(*new_seq)
     # The custom model.save list tells YOLO which layers' outputs to save for later use
     detection_model.save = [4, 6, 9, 10, 11, 12, 13]
+
+
+# ---------------------------------------------------------------------------
+# E8: Combined BiFPN neck with channel-preserving projection for YOLOv8-P2
+# ---------------------------------------------------------------------------
+
+class _FastFusion(nn.Module):
+    """Fast normalized learnable-weight fusion."""
+    def __init__(self, n: int = 2, eps: float = 1e-4):
+        super().__init__()
+        self.w = nn.Parameter(torch.ones(n))
+        self.eps = eps
+
+    def forward(self, *xs: torch.Tensor) -> torch.Tensor:
+        w = torch.relu(self.w)
+        s = w.sum() + self.eps
+        out = xs[0] * (w[0] / s)
+        for i in range(1, len(xs)):
+            out = out + xs[i] * (w[i] / s)
+        return out
+
+
+class E8FusionNeck(nn.Module):
+    """
+    BiFPN for P3/P4/P5 that takes backbone features [P3=64ch, P4=128ch, P5=256ch]
+    and returns refined features with the SAME channel dimensions so the rest
+    of the yolov8n-p2 neck (P2, P3, P4, P5) works without modification.
+
+    Internal channel dimension is `inner_ch` (default 128).
+    """
+
+    def __init__(
+        self,
+        in_ch: Tuple[int, int, int] = (64, 128, 256),
+        inner_ch: int = 128,
+        num_repeats: int = 2,
+    ):
+        super().__init__()
+        p3_ch, p4_ch, p5_ch = in_ch
+        self.inner_ch = inner_ch
+        self.num_repeats = num_repeats
+
+        # Project backbone features to inner_ch
+        self.proj_in_p3 = nn.Conv2d(p3_ch, inner_ch, 1, bias=False)
+        self.proj_in_p4 = nn.Conv2d(p4_ch, inner_ch, 1, bias=False)
+        self.proj_in_p5 = nn.Conv2d(p5_ch, inner_ch, 1, bias=False)
+
+        # BiFPN blocks
+        self.blocks = nn.ModuleList()
+        for _ in range(num_repeats):
+            block = nn.ModuleDict({
+                # Top-down
+                "td_fuse_p4": _FastFusion(2),
+                "td_conv_p4": nn.Sequential(
+                    nn.Conv2d(inner_ch, inner_ch, 3, padding=1, groups=inner_ch, bias=False),
+                    nn.BatchNorm2d(inner_ch),
+                    nn.SiLU(inplace=True),
+                ),
+                "td_fuse_p3": _FastFusion(2),
+                "td_conv_p3": nn.Sequential(
+                    nn.Conv2d(inner_ch, inner_ch, 3, padding=1, groups=inner_ch, bias=False),
+                    nn.BatchNorm2d(inner_ch),
+                    nn.SiLU(inplace=True),
+                ),
+                # Bottom-up
+                "bu_fuse_p4": _FastFusion(3),
+                "bu_conv_p4": nn.Sequential(
+                    nn.Conv2d(inner_ch, inner_ch, 3, padding=1, groups=inner_ch, bias=False),
+                    nn.BatchNorm2d(inner_ch),
+                    nn.SiLU(inplace=True),
+                ),
+                "bu_fuse_p5": _FastFusion(2),
+                "bu_conv_p5": nn.Sequential(
+                    nn.Conv2d(inner_ch, inner_ch, 3, padding=1, groups=inner_ch, bias=False),
+                    nn.BatchNorm2d(inner_ch),
+                    nn.SiLU(inplace=True),
+                ),
+            })
+            self.blocks.append(block)
+
+        self.up = nn.Upsample(scale_factor=2, mode="nearest")
+        self.down = nn.MaxPool2d(3, stride=2, padding=1)
+
+        # Project fused features back to original backbone channel dims
+        self.proj_out_p3 = nn.Conv2d(inner_ch, p3_ch, 1, bias=False)
+        self.proj_out_p4 = nn.Conv2d(inner_ch, p4_ch, 1, bias=False)
+        self.proj_out_p5 = nn.Conv2d(inner_ch, p5_ch, 1, bias=False)
+
+    def forward(self, features: List[torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        p3_in, p4_in, p5_in = features
+
+        # Project to inner_ch
+        p3 = self.proj_in_p3(p3_in)
+        p4 = self.proj_in_p4(p4_in)
+        p5 = self.proj_in_p5(p5_in)
+
+        for blk in self.blocks:
+            # Top-down pass
+            p4_td = blk["td_conv_p4"](blk["td_fuse_p4"](p4, self.up(p5)))
+            p3_out = blk["td_conv_p3"](blk["td_fuse_p3"](p3, self.up(p4_td)))
+            # Bottom-up pass
+            p4 = blk["bu_conv_p4"](blk["bu_fuse_p4"](p4, p4_td, self.down(p3_out)))
+            p5 = blk["bu_conv_p5"](blk["bu_fuse_p5"](p5, self.down(p4)))
+            p3 = p3_out
+
+        # Project back to original channel dimensions
+        return (
+            self.proj_out_p3(p3),   # 64ch
+            self.proj_out_p4(p4),   # 128ch
+            self.proj_out_p5(p5),   # 256ch
+        )
+
+
+def _make_e8_predict_once(fusion_neck: E8FusionNeck):
+    """
+    Returns a _predict_once method that injects E8FusionNeck after layer 9.
+    Overwrites saved backbone feature maps y[4], y[6], y[9] with BiFPN-fused features.
+    """
+    def _predict_once(self, x, profile=False, visualize=False, embed=None):
+        y = []
+        for m in self.model:
+            if m.f != -1:
+                if isinstance(m.f, int):
+                    x = y[m.f]
+                else:
+                    x = [x if j == -1 else y[j] for j in m.f]
+
+            x = m(x)
+
+            # After layer 9 (SPPF), apply BiFPN before the neck uses the features
+            if getattr(m, "i", -999) == 9:
+                p3_idx = 4  # y[4] = P3 (C2f after layer 4)
+                p4_idx = 6  # y[6] = P4 (C2f after layer 6)
+                # P5 = current x (SPPF output)
+
+                p3_fused, p4_fused, p5_fused = fusion_neck(
+                    [y[p3_idx], y[p4_idx], x]
+                )
+                # Overwrite saved feature maps — neck Concat layers read from here
+                y[p3_idx] = p3_fused   # 64ch
+                y[p4_idx] = p4_fused   # 128ch
+                x = p5_fused            # 256ch
+
+            y.append(x if (hasattr(m, "i") and m.i in self.save) else None)
+
+        return x
+
+    return _predict_once
