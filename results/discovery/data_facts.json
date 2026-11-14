@@ -1,0 +1,546 @@
+{
+  "data_yaml": "E:\\Yolov8_Plant_Cell_Detection\\data\\real\\data.yaml",
+  "tile_sizes_found": [
+    [
+      640,
+      640
+    ]
+  ],
+  "formats_found": [
+    ".jpg"
+  ],
+  "stats_per_split": {
+    "train": {
+      "total_tiles": 880,
+      "zero_label_tiles": 502,
+      "total_boxes": 5007,
+      "specimens": {
+        "plant_9": {
+          "tiles": 80,
+          "zero_tiles": 52,
+          "boxes": 448
+        },
+        "plant_10": {
+          "tiles": 80,
+          "zero_tiles": 56,
+          "boxes": 440
+        },
+        "plant_11": {
+          "tiles": 80,
+          "zero_tiles": 48,
+          "boxes": 461
+        },
+        "plant_12": {
+          "tiles": 80,
+          "zero_tiles": 53,
+          "boxes": 393
+        },
+        "plant_13": {
+          "tiles": 80,
+          "zero_tiles": 43,
+          "boxes": 562
+        },
+        "plant_1": {
+          "tiles": 80,
+          "zero_tiles": 43,
+          "boxes": 381
+        },
+        "plant_2": {
+          "tiles": 80,
+          "zero_tiles": 43,
+          "boxes": 375
+        },
+        "plant_3": {
+          "tiles": 80,
+          "zero_tiles": 42,
+          "boxes": 389
+        },
+        "plant_4": {
+          "tiles": 80,
+          "zero_tiles": 37,
+          "boxes": 542
+        },
+        "plant_5": {
+          "tiles": 80,
+          "zero_tiles": 40,
+          "boxes": 518
+        },
+        "plant_7": {
+          "tiles": 80,
+          "zero_tiles": 45,
+          "boxes": 498
+        }
+      }
+    },
+    "val": {
+      "total_tiles": 240,
+      "zero_label_tiles": 136,
+      "total_boxes": 1502,
+      "specimens": {
+        "plant_14": {
+          "tiles": 80,
+          "zero_tiles": 56,
+          "boxes": 377
+        },
+        "plant_15": {
+          "tiles": 80,
+          "zero_tiles": 41,
+          "boxes": 624
+        },
+        "plant_6": {
+          "tiles": 80,
+          "zero_tiles": 39,
+          "boxes": 501
+        }
+      }
+    },
+    "test": {
+      "total_tiles": 160,
+      "zero_label_tiles": 77,
+      "total_boxes": 1247,
+      "specimens": {
+        "plant_16": {
+          "tiles": 80,
+          "zero_tiles": 49,
+          "boxes": 503
+        },
+        "plant_8": {
+          "tiles": 80,
+          "zero_tiles": 28,
+          "boxes": 744
+        }
+      }
+    }
+  },
+  "box_size_percentiles_640scale": {
+    "overall": {
+      "w": {
+        "count": 7756,
+        "min": 29.599359999999997,
+        "p5": 68.85024000000001,
+        "p25": 111.77664,
+        "p50_median": 138.45119999999997,
+        "p75": 172.99984,
+        "p95": 216.09984,
+        "max": 307.6992,
+        "mean": 141.85377840123775,
+        "std": 44.47975150961854
+      },
+      "h": {
+        "count": 7756,
+        "min": 27.20064,
+        "p5": 66.24992,
+        "p25": 116.70016000000001,
+        "p50_median": 140.70016,
+        "p75": 161.20064,
+        "p95": 193.3992,
+        "max": 271.60064,
+        "mean": 137.18430886023725,
+        "std": 36.60007027165777
+      },
+      "sqrt_wh": {
+        "count": 7756,
+        "min": 54.94363772227682,
+        "p5": 86.78136659275918,
+        "p25": 115.07647335899442,
+        "p50_median": 135.9418855966095,
+        "p75": 156.57831810555845,
+        "p95": 187.52611952589825,
+        "max": 284.54161998464826,
+        "mean": 136.2317345461184,
+        "std": 30.280471242295913
+      }
+    },
+    "train": {
+      "w": {
+        "count": 5007,
+        "min": 29.6992,
+        "p5": 68.361024,
+        "p25": 113.40064,
+        "p50_median": 140.50176,
+        "p75": 172.99968,
+        "p95": 214.13913599999995,
+        "max": 307.6992,
+        "mean": 142.50468454563614,
+        "std": 43.96827029352331
+      },
+      "h": {
+        "count": 5007,
+        "min": 27.20064,
+        "p5": 65.12032,
+        "p25": 115.75008,
+        "p50_median": 139.60000000000002,
+        "p75": 159.39904,
+        "p95": 191.00032,
+        "max": 271.60064,
+        "mean": 135.8581081525864,
+        "std": 36.38632930165812
+      },
+      "sqrt_wh": {
+        "count": 5007,
+        "min": 54.94363772227682,
+        "p5": 86.73005920108668,
+        "p25": 115.23157566724021,
+        "p50_median": 135.97805564134237,
+        "p75": 156.03952136083626,
+        "p95": 185.53944157273784,
+        "max": 284.54161998464826,
+        "mean": 135.89004794192027,
+        "std": 30.02691430213527
+      }
+    },
+    "val": {
+      "w": {
+        "count": 1502,
+        "min": 29.599359999999997,
+        "p5": 68.627072,
+        "p25": 107.12688,
+        "p50_median": 128.49792000000002,
+        "p75": 161.09951999999998,
+        "p95": 203.37081600000002,
+        "max": 238.39872,
+        "mean": 133.64253656458055,
+        "std": 40.066720742884385
+      },
+      "h": {
+        "count": 1502,
+        "min": 32.59904,
+        "p5": 67.525184,
+        "p25": 121.2992,
+        "p50_median": 143.59872,
+        "p75": 164.30015999999998,
+        "p95": 195.064544,
+        "max": 269.20064,
+        "mean": 140.28685635153127,
+        "std": 36.935691407089216
+      },
+      "sqrt_wh": {
+        "count": 1502,
+        "min": 67.36309351566331,
+        "p5": 87.06517963719047,
+        "p25": 113.09793638641787,
+        "p50_median": 133.2864744322978,
+        "p75": 152.3581359576707,
+        "p95": 183.32410582284047,
+        "max": 236.05989504230828,
+        "mean": 133.9020796150767,
+        "std": 28.71495808882271
+      }
+    },
+    "test": {
+      "w": {
+        "count": 1247,
+        "min": 32.79936,
+        "p5": 70.39936,
+        "p25": 112.84960000000001,
+        "p50_median": 145.60128,
+        "p75": 186.09984,
+        "p95": 233.39904,
+        "max": 300.29952000000003,
+        "mean": 149.13060131515635,
+        "std": 49.735631605833575
+      },
+      "h": {
+        "count": 1247,
+        "min": 34.99904,
+        "p5": 67.089536,
+        "p25": 117.79968,
+        "p50_median": 142.5984,
+        "p75": 164.49919999999997,
+        "p95": 196.06924800000004,
+        "max": 226.49984,
+        "mean": 138.7723285966319,
+        "std": 36.76001259265428
+      },
+      "sqrt_wh": {
+        "count": 1247,
+        "min": 55.08538797594876,
+        "p5": 86.89162964846345,
+        "p25": 116.096090836016,
+        "p50_median": 139.83639491700865,
+        "p75": 163.67708247119802,
+        "p95": 194.85855713919355,
+        "max": 221.31133628495039,
+        "mean": 140.40973497406117,
+        "std": 32.63569007859409
+      }
+    }
+  },
+  "micrograph_coverage": {
+    "overall_mean_coverage_fraction": 0.19835353144892937,
+    "by_specimen": {
+      "plant_1": {
+        "micrographs": [
+          {
+            "micrograph": "A2_0808",
+            "num_cells": 78,
+            "union_pixel_area": 1513739,
+            "coverage_fraction": 0.18250132619598766
+          },
+          {
+            "micrograph": "A2_0809",
+            "num_cells": 93,
+            "union_pixel_area": 2027291,
+            "coverage_fraction": 0.24441683545524692
+          }
+        ],
+        "mean_coverage_fraction": 0.2134590808256173
+      },
+      "plant_2": {
+        "micrographs": [
+          {
+            "micrograph": "A3_0808",
+            "num_cells": 83,
+            "union_pixel_area": 1428898,
+            "coverage_fraction": 0.17227261766975308
+          },
+          {
+            "micrograph": "A3_0809",
+            "num_cells": 96,
+            "union_pixel_area": 1826164,
+            "coverage_fraction": 0.2201683063271605
+          }
+        ],
+        "mean_coverage_fraction": 0.19622046199845677
+      },
+      "plant_3": {
+        "micrographs": [
+          {
+            "micrograph": "A4_0808",
+            "num_cells": 83,
+            "union_pixel_area": 1453206,
+            "coverage_fraction": 0.17520326967592592
+          },
+          {
+            "micrograph": "A4_0809",
+            "num_cells": 95,
+            "union_pixel_area": 1973783,
+            "coverage_fraction": 0.23796573591820988
+          }
+        ],
+        "mean_coverage_fraction": 0.20658450279706791
+      },
+      "plant_4": {
+        "micrographs": [
+          {
+            "micrograph": "A6_0808",
+            "num_cells": 95,
+            "union_pixel_area": 1467754,
+            "coverage_fraction": 0.17695722415123458
+          },
+          {
+            "micrograph": "A6_0809",
+            "num_cells": 112,
+            "union_pixel_area": 2279918,
+            "coverage_fraction": 0.27487437307098767
+          }
+        ],
+        "mean_coverage_fraction": 0.2259157986111111
+      },
+      "plant_5": {
+        "micrographs": [
+          {
+            "micrograph": "B3_0808",
+            "num_cells": 100,
+            "union_pixel_area": 1663654,
+            "coverage_fraction": 0.20057556905864196
+          },
+          {
+            "micrograph": "B3_0809",
+            "num_cells": 115,
+            "union_pixel_area": 2281922,
+            "coverage_fraction": 0.275115981867284
+          }
+        ],
+        "mean_coverage_fraction": 0.23784577546296298
+      },
+      "plant_6": {
+        "micrographs": [
+          {
+            "micrograph": "B4_0809",
+            "num_cells": 88,
+            "union_pixel_area": 1679903,
+            "coverage_fraction": 0.20253460165895062
+          },
+          {
+            "micrograph": "B4_0810",
+            "num_cells": 99,
+            "union_pixel_area": 1951314,
+            "coverage_fraction": 0.23525679976851852
+          }
+        ],
+        "mean_coverage_fraction": 0.21889570071373457
+      },
+      "plant_7": {
+        "micrographs": [
+          {
+            "micrograph": "B5_0808",
+            "num_cells": 100,
+            "union_pixel_area": 1719474,
+            "coverage_fraction": 0.20730541087962964
+          },
+          {
+            "micrograph": "B5_0809",
+            "num_cells": 106,
+            "union_pixel_area": 2101385,
+            "coverage_fraction": 0.2533498505015432
+          }
+        ],
+        "mean_coverage_fraction": 0.23032763069058643
+      },
+      "plant_8": {
+        "micrographs": [
+          {
+            "micrograph": "B6_0808",
+            "num_cells": 125,
+            "union_pixel_area": 2281689,
+            "coverage_fraction": 0.275087890625
+          },
+          {
+            "micrograph": "B6_0809",
+            "num_cells": 145,
+            "union_pixel_area": 2990595,
+            "coverage_fraction": 0.3605559172453704
+          }
+        ],
+        "mean_coverage_fraction": 0.31782190393518517
+      },
+      "plant_9": {
+        "micrographs": [
+          {
+            "micrograph": "250102-1-1_T0",
+            "num_cells": 95,
+            "union_pixel_area": 1105726,
+            "coverage_fraction": 0.13330994405864197
+          },
+          {
+            "micrograph": "250102-1-1_T24-1",
+            "num_cells": 116,
+            "union_pixel_area": 1275868,
+            "coverage_fraction": 0.15382282021604937
+          }
+        ],
+        "mean_coverage_fraction": 0.14356638213734568
+      },
+      "plant_10": {
+        "micrographs": [
+          {
+            "micrograph": "250102-1-2_T0",
+            "num_cells": 101,
+            "union_pixel_area": 1192916,
+            "coverage_fraction": 0.14382185570987654
+          },
+          {
+            "micrograph": "250102-1-2_T24",
+            "num_cells": 118,
+            "union_pixel_area": 1435317,
+            "coverage_fraction": 0.1730465133101852
+          }
+        ],
+        "mean_coverage_fraction": 0.15843418451003088
+      },
+      "plant_11": {
+        "micrographs": [
+          {
+            "micrograph": "250102-1-3_T0",
+            "num_cells": 99,
+            "union_pixel_area": 1158705,
+            "coverage_fraction": 0.139697265625
+          },
+          {
+            "micrograph": "250102-1-3_T24",
+            "num_cells": 113,
+            "union_pixel_area": 1368592,
+            "coverage_fraction": 0.16500192901234567
+          }
+        ],
+        "mean_coverage_fraction": 0.15234959731867284
+      },
+      "plant_12": {
+        "micrographs": [
+          {
+            "micrograph": "250102-2-1_T0",
+            "num_cells": 85,
+            "union_pixel_area": 1231401,
+            "coverage_fraction": 0.1484617332175926
+          },
+          {
+            "micrograph": "250102-2-1_T24",
+            "num_cells": 106,
+            "union_pixel_area": 1416361,
+            "coverage_fraction": 0.170761115933642
+          }
+        ],
+        "mean_coverage_fraction": 0.15961142457561728
+      },
+      "plant_13": {
+        "micrographs": [
+          {
+            "micrograph": "250102-2-2_T0",
+            "num_cells": 101,
+            "union_pixel_area": 1530665,
+            "coverage_fraction": 0.18454198013117284
+          },
+          {
+            "micrograph": "250102-2-2_T24",
+            "num_cells": 150,
+            "union_pixel_area": 1763997,
+            "coverage_fraction": 0.21267324942129628
+          }
+        ],
+        "mean_coverage_fraction": 0.19860761477623456
+      },
+      "plant_14": {
+        "micrographs": [
+          {
+            "micrograph": "250102-3-1_T0",
+            "num_cells": 87,
+            "union_pixel_area": 1107081,
+            "coverage_fraction": 0.13347330729166668
+          },
+          {
+            "micrograph": "250102-3-1_T24",
+            "num_cells": 100,
+            "union_pixel_area": 1368023,
+            "coverage_fraction": 0.16493332851080247
+          }
+        ],
+        "mean_coverage_fraction": 0.1492033179012346
+      },
+      "plant_15": {
+        "micrographs": [
+          {
+            "micrograph": "250102-3-3_T0",
+            "num_cells": 102,
+            "union_pixel_area": 1341926,
+            "coverage_fraction": 0.1617869888117284
+          },
+          {
+            "micrograph": "250102-3-3_T24",
+            "num_cells": 126,
+            "union_pixel_area": 1666617,
+            "coverage_fraction": 0.2009327980324074
+          }
+        ],
+        "mean_coverage_fraction": 0.1813598934220679
+      },
+      "plant_16": {
+        "micrographs": [
+          {
+            "micrograph": "250102-4-1_T0",
+            "num_cells": 116,
+            "union_pixel_area": 1356486,
+            "coverage_fraction": 0.1635423900462963
+          },
+          {
+            "micrograph": "250102-4-1_T24",
+            "num_cells": 131,
+            "union_pixel_area": 1686783,
+            "coverage_fraction": 0.2033640769675926
+          }
+        ],
+        "mean_coverage_fraction": 0.18345323350694445
+      }
+    }
+  }
+}

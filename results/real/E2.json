@@ -1,0 +1,46 @@
+{
+  "stage": "E2",
+  "description": "P2 stride-4 detection head (nc=1)",
+  "status": "COMPLETED",
+  "checkpoint": "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E2\\weights\\best.pt",
+  "params_inference": 2926692,
+  "params_total": 2926692,
+  "gflops": 12.3582,
+  "train_batch_size": 16,
+  "train_duration_sec": 1991.69109582901,
+  "test_metrics": {
+    "precision": 0.6140776699029126,
+    "recall": 0.4057738572574178,
+    "F1": 0.4886528247223564,
+    "mAP50": 0.30042406595542503,
+    "mAP50_95": 0.2666969045486116,
+    "cell_AP50": 0.30042406595542503,
+    "cell_AP50_95": 0.2666969045486116,
+    "val_save_dir": "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E2\\test_eval"
+  },
+  "benchmark": {
+    "b1_fp32_latency_ms": 10.580132649739584,
+    "b1_fp32_latency_std": 0.9692679299835443,
+    "b1_fp32_fps": 94.51677338134449,
+    "b1_fp32_vram_mb": 145.892578125,
+    "b1_fp16_latency_ms": 13.802322591145833,
+    "b1_fp16_latency_std": 0.41076153054605236,
+    "b1_fp16_fps": 72.45157424747471,
+    "b1_fp16_vram_mb": 89.69677734375,
+    "b16_fp32_latency_ms": 100.49013671875,
+    "b16_fp32_latency_std": 0.622144496824874,
+    "b16_fp32_fps": 159.21960624633752,
+    "b16_fp32_vram_mb": 805.59716796875,
+    "b16_fp16_latency_ms": 62.62592447916666,
+    "b16_fp16_latency_std": 0.5851803900227585,
+    "b16_fp16_fps": 255.48525044644424,
+    "b16_fp16_vram_mb": 421.50146484375
+  },
+  "representative_predictions": [
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E2\\representative_predictions\\test_pred_sample_1_250102-4-1_T0_tile0000.jpg",
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E2\\representative_predictions\\test_pred_sample_2_250102-4-1_T24_tile0000.jpg",
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E2\\representative_predictions\\test_pred_sample_3_B6_0808_tile0000.jpg",
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E2\\representative_predictions\\test_pred_sample_4_B6_0809_tile0000.jpg"
+  ],
+  "epoch_boundary_losses": []
+}

@@ -1,0 +1,5 @@
+{
+  "stage": "E7",
+  "status": "SKIPPED",
+  "reason": "Explicitly excluded from primary training order per experimental protocol."
+}

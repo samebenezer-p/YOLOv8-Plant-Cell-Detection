@@ -132,7 +132,7 @@ def run_stage_smoke(stage_name: str, iou_patch=None):
         "epochs": 3,
         "batch": 4,
         "imgsz": 256,
-        "device": "cpu",
+        "device": 0 if torch.cuda.is_available() else "cpu",
         "project": "runs/smoke",
         "name": stage_name,
         "plots": False,

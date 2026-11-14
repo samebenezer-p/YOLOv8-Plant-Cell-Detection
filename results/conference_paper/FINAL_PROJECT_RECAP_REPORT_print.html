@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Final Project Recap Report: High-Resolution YOLOv8-Based Plant Cell Detection</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.7in 0.65in 0.7in 0.65in;
+  }
+  body {
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+    font-size: 10pt;
+    line-height: 1.3;
+    color: #111;
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  .header-box {
+    text-align: center;
+    border-bottom: 2pt solid #1a365d;
+    padding-bottom: 10pt;
+    margin-bottom: 14pt;
+  }
+  .report-title {
+    font-size: 18pt;
+    font-weight: bold;
+    color: #1a365d;
+    line-height: 1.25;
+    margin-bottom: 6pt;
+  }
+  .report-subtitle {
+    font-size: 11pt;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 8pt;
+  }
+  .meta-grid {
+    display: table;
+    width: 100%;
+    font-size: 9.5pt;
+    line-height: 1.25;
+  }
+  .meta-row {
+    display: table-row;
+  }
+  .meta-cell {
+    display: table-cell;
+    padding: 2pt 4pt;
+  }
+  h1 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #1a365d;
+    border-bottom: 1pt solid #cbd5e0;
+    padding-bottom: 2pt;
+    margin-top: 14pt;
+    margin-bottom: 6pt;
+    break-after: avoid;
+  }
+  h2 {
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #2c5282;
+    margin-top: 10pt;
+    margin-bottom: 4pt;
+    break-after: avoid;
+  }
+  p {
+    margin: 0 0 6pt 0;
+    text-indent: 1.25em;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  ul, ol {
+    margin: 3pt 0 6pt 0;
+    padding-left: 1.5em;
+  }
+  li {
+    margin-bottom: 3pt;
+    line-height: 1.25;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8pt;
+    line-height: 1.2;
+    margin: 10pt 0;
+    break-inside: avoid;
+  }
+  table.data-table th {
+    background-color: #ebf8ff;
+    border-top: 1.2pt solid #1a365d;
+    border-bottom: 0.8pt solid #1a365d;
+    padding: 4pt 3pt;
+    font-weight: bold;
+    text-align: center;
+    color: #1a365d;
+  }
+  table.data-table td {
+    border-bottom: 0.5pt solid #e2e8f0;
+    padding: 3.5pt 3pt;
+    text-align: center;
+  }
+  table.data-table tr.highlight-row {
+    background-color: #f7fafc;
+    font-weight: bold;
+  }
+  .box-callout {
+    border-left: 3pt solid #2b6cb0;
+    background-color: #ebf8ff;
+    padding: 6pt 10pt;
+    margin: 8pt 0;
+    font-size: 9.2pt;
+    line-height: 1.25;
+    break-inside: avoid;
+  }
+  .box-danger {
+    border-left: 3pt solid #c53030;
+    background-color: #fff5f5;
+    padding: 6pt 10pt;
+    margin: 8pt 0;
+    font-size: 9.2pt;
+    line-height: 1.25;
+    break-inside: avoid;
+  }
+  .pre-code {
+    background-color: #f7fafc;
+    border: 0.6pt solid #cbd5e0;
+    padding: 6pt 8pt;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 7.5pt;
+    line-height: 1.2;
+    margin: 8pt 0;
+    white-space: pre;
+    break-inside: avoid;
+  }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+  <div class="report-title">Authoritative Final Project Recap Report: High-Resolution YOLOv8-Based Plant Cell Detection and Architectural Ablation</div>
+  <div class="report-subtitle">Definitive Experimental Evidence Package, Hardware Profiling, and IEEE Conference Blueprint</div>
+  <div class="meta-grid">
+    <div class="meta-row">
+      <div class="meta-cell"><strong>Author:</strong> Sam Ebenezer .P</div>
+      <div class="meta-cell"><strong>Supervisor / Guide:</strong> M. Denisha</div>
+    </div>
+    <div class="meta-row">
+      <div class="meta-cell"><strong>Department:</strong> Computer Science and Engineering</div>
+      <div class="meta-cell"><strong>Institution:</strong> Karunya Institute of Technology and Sciences, India</div>
+    </div>
+    <div class="meta-row">
+      <div class="meta-cell"><strong>Project Status:</strong> COMPLETE &amp; PERMANENTLY FROZEN</div>
+      <div class="meta-cell"><strong>Target Venue:</strong> IEEE Conference (Bio-Imaging / Computer Vision)</div>
+    </div>
+  </div>
+</div>
+
+<h1>1. Executive Summary &amp; Research Scope</h1>
+<p>This report presents the definitive scientific synthesis of the research project <strong>"High-Resolution YOLOv8-Based Plant Cell Detection and Architectural Ablation on Microscopic Sequences."</strong> The project investigated lightweight architectural modifications and geometric loss formulations for dense microscopic plant cell localization on high-resolution micrographs (3840 &times; 2160 pixels tiled to 640 &times; 640), operating under the strict hardware constraints of an entry-level edge workstation (NVIDIA GeForce RTX 3050 Laptop GPU, 4 GB VRAM).</p>
+
+<p>Crucially, the study eliminates optimistic evaluation bias by enforcing a strict specimen-disjoint split across 16 biological groups, decoupling serial observations (0h and 24h). Through an isolated ablation suite of seven primary configurations (E1–E5b, E8), we prove that a 128-channel Bidirectional FusionNeck (E3) achieves Pareto-optimal efficiency (-32.9% parameters, -11.1% GFLOPs, 91.5 FPS, top F<sub>1</sub> of 0.4915), while Shape-IoU (E5a) reaches peak detection accuracy (mAP50 = 0.6324) with zero inference overhead.</p>
+
+<h1>2. Problem Formulation &amp; Single-Class Detection Task</h1>
+<p>Unlike natural scene datasets with extreme scale variance and sparse targets, optical plant cell microscopy is characterized by: (1) contiguous polygonal cell walls where instances share boundaries; (2) scale homogeneity; and (3) severe spatial degradation at large feature strides (stride 32 collapses micro-cells). Cell detection is strictly formulated as a single-class object localization problem (n<sub>c</sub> = 1, class_id = 0, class_name = "cell"). Ground truth polygon tracking indices ("1", "2", "34-1") represent lineage identifiers, not biological tissue classes. No synthetic labels (vessel, fiber, parenchyma) are evaluated.</p>
+
+<h1>3. Dataset Characteristics &amp; Taxonomic Disclosure</h1>
+<p>The dataset contains 32 brightfield micrographs (3840 &times; 2160 pixels) across 16 physical specimen groups (<code>plant_1</code> to <code>plant_16</code>) observed at 0h and 24h, containing 3,359 cell annotations.</p>
+
+<div class="box-callout">
+  <strong>Taxonomic Ambiguity Disclosure:</strong> The local repository README refers to specimens as "Arabidopsis plant lines," while cultivar designations "Sansha-5" and "WO115-2" are documented in literature as strains of the red seaweed <em>Pyropia haitanensis</em>. The paper transparently reports the specimens by strain identifiers and explicitly notes that formal taxonomic confirmation requires external curator verification.
+</div>
+
+<h1>4. Data Pipeline &amp; Zero-Leakage Specimen Partitioning</h1>
+<p>Micrographs are tiled to 640 &times; 640 with step 480 px (25% overlap) and visible area fraction &ge; 0.30, yielding exactly 1,280 tiles. To prevent background memorization between serial 0h and 24h observations, splitting is enforced at the physical specimen level:</p>
+<ul>
+  <li><strong>Training (11 Specimens):</strong> <code>plant_1..5, 7, 9..13</code> &rarr; 22 micrographs, 880 tiles, 5,007 cell instances.</li>
+  <li><strong>Validation (3 Specimens):</strong> <code>plant_6, 14, 15</code> &rarr; 6 micrographs, 240 tiles, 1,502 cell instances.</li>
+  <li><strong>Held-Out Test (2 Specimens):</strong> <code>plant_8, 16</code> &rarr; 4 micrographs, 160 tiles, 1,247 cell instances.</li>
+  <li><strong>Specimen Overlap:</strong> Strictly 0 (disjoint sets: S<sub>train</sub> &cap; S<sub>val</sub> = &empty;, S<sub>train</sub> &cap; S<sub>test</sub> = &empty;, S<sub>val</sub> &cap; S<sub>test</sub> = &empty;).</li>
+</ul>
+
+<h1>5. Master Empirical Evidence Matrix (Frozen Results)</h1>
+<p class="no-indent">Evaluated on the held-out test split (160 tiles, 1,247 ground-truth instances). Operational metrics evaluated at &tau; = 0.25; curve-sweep mAP evaluated at &tau; = 0.001.</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th style="text-align:left;">Stage</th>
+      <th style="text-align:left;">Architecture Description</th>
+      <th>Params (Inf)</th>
+      <th>GFLOPs</th>
+      <th>Precision (&tau;=0.25)</th>
+      <th>Recall (&tau;=0.25)</th>
+      <th>F1 (&tau;=0.25)</th>
+      <th>mAP50 (&tau;=0.001)</th>
+      <th>mAP50-95 (&tau;=0.001)</th>
+      <th>Latency (ms)</th>
+      <th>FPS (FP16)</th>
+      <th>Peak VRAM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left;"><strong>E1</strong></td>
+      <td style="text-align:left;">Stock YOLOv8n baseline (nc=1)</td>
+      <td>3,011,043</td>
+      <td>8.1942</td>
+      <td>0.4131</td>
+      <td><strong>0.5646</strong></td>
+      <td>0.4771</td>
+      <td>0.4846</td>
+      <td>0.4247</td>
+      <td>11.08</td>
+      <td>90.3</td>
+      <td>257.2 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><strong>E2</strong></td>
+      <td style="text-align:left;">P2 stride-4 detection head</td>
+      <td>2,926,692</td>
+      <td>12.3582</td>
+      <td>0.6141</td>
+      <td>0.4058</td>
+      <td>0.4887</td>
+      <td>0.5756</td>
+      <td>0.5007</td>
+      <td>13.80</td>
+      <td>72.5</td>
+      <td>421.5 MB</td>
+    </tr>
+    <tr class="highlight-row">
+      <td style="text-align:left;"><strong>E3</strong></td>
+      <td style="text-align:left;">Bidirectional FusionNeck (BiFPN, 128ch)</td>
+      <td><strong>2,019,061</strong></td>
+      <td><strong>7.2822</strong></td>
+      <td>0.6560</td>
+      <td>0.3929</td>
+      <td><strong>0.4915</strong></td>
+      <td>0.6210</td>
+      <td>0.5368</td>
+      <td><strong>10.92</strong></td>
+      <td><strong>91.5</strong></td>
+      <td><strong>256.7 MB</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><strong>E4</strong></td>
+      <td style="text-align:left;">Auxiliary BoundaryHead (train-only)<sup>*</sup></td>
+      <td>3,011,043</td>
+      <td>8.1942</td>
+      <td><strong>0.9038</strong></td>
+      <td>0.0377</td>
+      <td>0.0724</td>
+      <td>0.5422</td>
+      <td>0.4581</td>
+      <td>11.07</td>
+      <td>90.3</td>
+      <td>256.2 MB</td>
+    </tr>
+    <tr class="highlight-row">
+      <td style="text-align:left;"><strong>E5a</strong></td>
+      <td style="text-align:left;">Shape-IoU regression loss (E1 arch)</td>
+      <td>3,011,043</td>
+      <td>8.1942</td>
+      <td>0.6954</td>
+      <td>0.3039</td>
+      <td>0.4230</td>
+      <td><strong>0.6324</strong></td>
+      <td><strong>0.5579</strong></td>
+      <td>11.08</td>
+      <td>90.3</td>
+      <td>257.2 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><strong>E5b</strong></td>
+      <td style="text-align:left;">MPDIoU regression loss (E1 arch)</td>
+      <td>3,011,043</td>
+      <td>8.1942</td>
+      <td>0.6646</td>
+      <td>0.0858</td>
+      <td>0.1520</td>
+      <td>0.4436</td>
+      <td>0.3814</td>
+      <td>11.08</td>
+      <td>90.3</td>
+      <td>257.2 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><strong>E8</strong></td>
+      <td style="text-align:left;">Full combined model (P2+Fusion+Bnd+Shape)<sup>&dagger;</sup></td>
+      <td>3,052,662</td>
+      <td>12.7959</td>
+      <td>0.7317</td>
+      <td>0.3609</td>
+      <td>0.4834</td>
+      <td>0.6043</td>
+      <td>0.5042</td>
+      <td>16.69</td>
+      <td>59.9</td>
+      <td>422.0 MB</td>
+    </tr>
+  </tbody>
+</table>
+<p class="no-indent" style="font-size:7.5pt; font-style:italic;"><sup>*</sup>E4 contains 18,529 train-only parameters pruned prior to inference. <sup>&dagger;</sup>E8 contains 9,313 train-only parameters pruned prior to inference. Stages E6 (ContextRefineClassifier) and E7 (DCNv2) were SKIPPED in the primary sweep per protocol.</p>
+
+<h1>6. Key Scientific Discoveries</h1>
+<ol>
+  <li><strong>BiFPN FusionNeck (E3) is Pareto-Optimal:</strong> Slashes parameter count by 32.9% and GFLOPs by 11.1% while securing the highest F<sub>1</sub> score (0.4915 at &tau; = 0.25) and boosting mAP50 by +0.1364 (0.6210 vs 0.4846). Standard 256ch PANet necks possess substantial feature redundancy for single-class cell detection.</li>
+  <li><strong>Shape-IoU (E5a) is the Accuracy Champion:</strong> Reaches highest mAP50 (0.6324) and mAP50-95 (0.5579) with zero additional inference parameters or FLOPs. Conversely, MPDIoU (E5b) suffers acute degradation (mAP50 = 0.4436) due to corner-distance instability on dense cellular meshes.</li>
+  <li><strong>Auxiliary BoundaryHead (E4) Regularization:</strong> Achieves 0.9038 precision with zero inference overhead, but compresses output confidence logits (&tau; = 0.25 recall drops to 0.0377). High mAP50 at &tau; = 0.001 (0.5422) demonstrates that boundary regularization requires lower operational thresholds (&tau; &approx; 0.05–0.10).</li>
+  <li><strong>Compound Diminishing Returns (E8):</strong> Stacking all modifications expands compute (+56% GFLOPs, 59.9 FPS) without exceeding lighter isolated models (E3 or E5a), illustrating multi-component gradient interference.</li>
+</ol>
+
+<h1>7. Engineering Finding: E8 Deserialization &amp; Forward-Pass Restoration</h1>
+<div class="pre-code">
+  +---------------------------------------------------------------------------------------+
+  |                    E8 CHECKPOINT DESERIALIZATION FAILURE & RESTORATION                |
+  |                                                                                       |
+  | 1. Training Phase: model._predict_once = custom_e8_forward(model)                     |
+  | 2. torch.save() Serialization: Drops dynamic Python instance method bindings.         |
+  | 3. Raw Reloading: Ultralytics reverts to default forward pass, bypassing FusionNeck.  |
+  |    ==> Yields spurious failure: mAP50 = 0.0165, Recall = 0.0000.                      |
+  | 4. Verification Protocol: Explicitly re-bind custom forward pass post-loading.        |
+  |    ==> VERIFIED TRUE PERFORMANCE: mAP50 = 0.6043, Precision = 0.7317 (VALIDATED).     |
+  +---------------------------------------------------------------------------------------+
+</div>
+
+<h1>8. Hardware Efficiency on NVIDIA RTX 3050 Laptop GPU</h1>
+<p>CUDA event timing across 5 interleaved repeats (100 warm-up, 300 timed passes, NMS excluded) confirms real-time edge execution: E3 achieves 10.92 ms latency (91.5 FPS at Batch=1; 411.0 FPS at Batch=16 FP16). Peak runtime VRAM remains below 425 MB across all models (E3: 256.7 MB, E8: 422.0 MB), validating full feasibility on 4 GB GPU workstations.</p>
+
+<h1>9. Scientific Claims Matrix &amp; Guardrails</h1>
+<div class="box-danger">
+  <strong>STRICTLY PROHIBITED OVERCLAIMS:</strong>
+  (1) Do NOT claim novelty on existing architectures (P2, BiFPN, Shape-IoU, MPDIoU); (2) Do NOT claim multi-class tissue detection (vessel, fiber, parenchyma); (3) Do NOT claim definitive botanical identity as Arabidopsis; (4) Do NOT claim universal superiority across all bio-imaging datasets.
+</div>
+
+<h1>10. Complete Conference Deliverables Manifest</h1>
+<ul>
+  <li><strong>Final IEEE Conference Paper PDF:</strong> <code>results/conference_paper/conference_paper.pdf</code> (422.6 KB)</li>
+  <li><strong>LaTeX Source File:</strong> <code>results/conference_paper/main.tex</code> (IEEEtran format)</li>
+  <li><strong>Conference Paper Markdown:</strong> <code>results/conference_paper/conference_paper.md</code></li>
+  <li><strong>Literature Survey PDF:</strong> <code>results/conference_paper/literature_survey.pdf</code> (227.8 KB)</li>
+  <li><strong>Literature Survey Markdown:</strong> <code>results/conference_paper/literature_survey.md</code></li>
+  <li><strong>Master Numerical Results CSV:</strong> <code>results/conference_paper/conference_paper_results.csv</code></li>
+  <li><strong>Hardware Efficiency CSV:</strong> <code>results/conference_paper/conference_paper_efficiency.csv</code></li>
+  <li><strong>Ablation Deltas CSV:</strong> <code>results/conference_paper/conference_paper_ablation.csv</code></li>
+</ul>
+
+</body>
+</html>

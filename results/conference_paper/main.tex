@@ -1,0 +1,319 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{url}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{High-Resolution YOLOv8-Based Plant Cell Detection and Architectural Ablation on Microscopic Sequences}
+
+\author{\IEEEauthorblockN{Sam Ebenezer .P}
+\IEEEauthorblockA{\textit{Department of Computer Science and Engineering} \\
+\textit{Karunya Institute of Technology and Sciences}\\
+Coimbatore, India \\
+}
+\and
+\IEEEauthorblockN{Mrs. M. Denisha, M.E.}
+\IEEEauthorblockA{\textit{Department of Computer Science and Engineering} \\
+\textit{Karunya Institute of Technology and Sciences}\\
+Coimbatore, India \\
+}
+}
+
+\maketitle
+
+\begin{abstract}
+Automated cell detection in high-resolution plant microscopy is vital for quantitative phenotyping and lineage tracking. However, standard object detectors designed for natural images struggle with dense, micro-scale morphological boundaries, high cell densities, and tight hardware constraints on edge computing devices. Furthermore, naive patch-based evaluations frequently suffer from optimistic bias due to specimen-level data leakage across time points. In this work, we conduct a systematic, experimentally controlled ablation of lightweight architectural and loss modifications to the YOLOv8n detector for single-class plant cell localization ($3840 \times 2160$ resolution micrographs tiled to $640 \times 640$). We evaluate: (i) a stride-4 ($P_2$) detection head for high-resolution feature preservation, (ii) a bidirectional multiscale feature fusion neck (BiFPN-style FusionNeck), (iii) an auxiliary boundary-supervision head, and (iv) bounding-box regression loss variants including Shape-IoU and MPDIoU. Crucially, all models are evaluated on a held-out, specimen-disjoint test split to prevent temporal leakage between serial observations.
+
+Our empirical results on an NVIDIA GeForce RTX 3050 Laptop GPU (4 GB VRAM) reveal three primary findings: First, the Bidirectional FusionNeck (E3) achieves Pareto-optimal efficiency, reducing parameter count by 32.9\% (from 3.01M to 2.02M) and GFLOPs by 11.1\% (from 8.19 to 7.28) while increasing inference throughput to 91.5 FPS and yielding the highest $F_1$ score (0.4915 at $\tau=0.25$) and a +0.1364 mAP50 improvement over the baseline (0.6210 vs. 0.4846 at $\tau=0.001$). Second, Shape-IoU (E5a) achieves the highest overall accuracy ($\text{mAP50}=0.6324$, $\text{mAP50-95}=0.5579$) with zero additional inference parameters or latency penalty over stock YOLOv8n. Third, combining all modules into a composite architecture (E8) introduces optimization conflicts and computational overhead (12.80 GFLOPs, 59.9 FPS, $\text{mAP50}=0.6043$), failing to surpass the lighter isolated configurations. Finally, we document an engineering investigation into a checkpoint deserialization defect encountered when deploying dynamic PyTorch modules, outlining the required forward-pass restoration protocol.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Plant cell detection, YOLOv8, high-resolution microscopy, architectural ablation, Bidirectional Feature Pyramid, Shape-IoU, specimen-level splitting, edge inference.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Microscopic analysis of plant cells provides quantitative insight into developmental dynamics, cell division rates, morphological plasticity, and physiological stress responses. High-resolution optical microscopy captures expansive fields of view ($3840 \times 2160$ pixels and higher), encompassing hundreds to thousands of contiguous, densely clustered cell instances per frame. Historically, cell localization has relied on classical image processing pipelines such as watershed segmentation, morphological filtering, or intensity thresholding. While computationally modest, these heuristics break down under heterogeneous optical illumination, out-of-focus blurs, irregular cell morphologies, and low signal-to-noise ratios.
+
+Modern deep-learning-based object detectors---predominantly convolutional and transformer-based architectures---have demonstrated remarkable localization capabilities in bio-imaging. In particular, the You Only Look Once (YOLO) family of one-stage detectors has gained widespread adoption due to its balance between detection speed and localization accuracy. However, standard object detectors are predominantly calibrated for natural scene datasets (e.g., MS COCO), where targets occupy variable, often large visual angles, backgrounds are semantically diverse, and instances rarely appear in dense, lattice-like configurations. In microscopy, cell targets present unique challenges:
+\begin{enumerate}
+    \item \textbf{Dense Clustering and Shared Cell Walls:} Cells frequently share boundaries, where sub-pixel shifts lead to severe bounding-box overlap and ambiguous intersection-over-union (IoU) computations.
+    \item \textbf{Scale Homogeneity and Fine Geometry:} Unlike natural scenes featuring extreme multiscale variance (e.g., person vs. airplane), plant cells within a field of view exhibit relatively uniform physical sizes, rendering deeper downsampling strides (e.g., stride 32) functionally redundant while discarding spatial boundary cues.
+    \item \textbf{Data Leakage in Microscopic Time-Series:} Microscopic studies often record the same physical specimen across temporal intervals (e.g., 0h and 24h). Naive random patch splitting partitions tiles from the same specimen across training and test splits, introducing catastrophic memorization of specimen-specific background artifacts and yielding inflated performance metrics.
+\end{enumerate}
+
+To address these challenges under strict hardware constraints (specifically, 4 GB GPU edge workstations), this paper presents a controlled empirical investigation of lightweight architectural and regression loss enhancements built upon the YOLOv8n backbone. Rather than claiming the invention of established modules, our scientific contribution lies in a rigorous, leakage-free ablation of spatial heads, feature fusion topologies, boundary supervision, and bounding-box geometries.
+
+The primary contributions of this work are:
+\begin{itemize}
+    \item \textbf{Specimen-Disjoint Microscopic Evaluation:} We implement a strict specimen-level data partitioning protocol across 32 ultra-high-resolution micrographs (3,359 cell annotations, 16 biological groups), eliminating temporal and specimen-level data leakage between 0h and 24h observations.
+    \item \textbf{Systematic Architectural Ablation:} We evaluate isolated modifications to YOLOv8n, isolating the individual empirical impacts of a high-resolution stride-4 ($P_2$) head, a Bidirectional FusionNeck (BiFPN-style routing), and an auxiliary boundary prediction head.
+    \item \textbf{Bounding-Box Geometry Analysis:} We compare standard Complete-IoU (CIoU) against Shape-IoU and Minimum Point Distance IoU (MPDIoU), demonstrating that shape-sensitive geometric penalties significantly boost dense cell localization without any inference overhead.
+    \item \textbf{Computational Profiling and Pareto Analysis:} We conduct multi-repeat CUDA event profiling on physical hardware (RTX 3050 Laptop GPU), characterizing parameter count, GFLOPs, latency, throughput (FPS), and peak VRAM to identify Pareto-optimal edge architectures.
+    \item \textbf{Engineering Verification Insight:} We document a critical checkpoint deserialization defect encountered when evaluating dynamic neural modules (E8), detailing the failure mode and the verification protocol required to ensure reproducible inference.
+\end{itemize}
+
+\section{Related Work}
+
+\subsection{YOLO Architectures in Bio-Imaging}
+The YOLO architecture family has evolved from coupled grid-based regressors into decoupled, anchor-free detection frameworks \cite{jocher2023yolo, wang2023yolov7, li2022yolov6}. YOLOv8 incorporates a CSPDarknet backbone with Cross-Stage Partial with 2 Convolutions (C2f) modules and an anchor-free decoupled head separating bounding-box regression from classification. While YOLOv8n achieves high throughput on mobile and edge devices, its default feature pyramid downsamples inputs across strides 8 ($P_3$), 16 ($P_4$), and 32 ($P_5$). In microscopic cell detection, where cell diameters often span only 15--40 pixels, the spatial features of target cells are substantially degraded or entirely lost at stride 32.
+
+\subsection{High-Resolution and Small-Object Detection}
+To detect micro-scale objects, small-object detection literature commonly adopts low-level feature taps. Introducing a stride-4 ($P_2$) detection head incorporates low-level textural and edge representations from the backbone into the detection head. While this approach preserves spatial resolution for small targets, it dramatically increases the spatial dimensions of the intermediate feature maps ($160 \times 160$ for a $640 \times 640$ input), expanding computational complexity (GFLOPs) and activation memory.
+
+\subsection{Multiscale Feature Fusion and BiFPN}
+Standard Feature Pyramid Networks (FPN) and Path Aggregation Networks (PANet) propagate semantic features top-down and spatial features bottom-up. However, PANet treats all input paths uniformly without learnable weight allocation or cross-scale skip connections. The Bidirectional Feature Pyramid Network (BiFPN), introduced in EfficientDet \cite{tan2020efficientdet}, integrates bidirectional cross-scale connections and weighted feature fusion, allowing the network to emphasize salient spatial resolutions while pruning redundant layers.
+
+\subsection{Bounding-Box Regression Losses}
+Bounding-box regression has advanced from $\ell_1/\ell_2$ coordinate loss to IoU-based formulations. Generalized IoU (GIoU), Distance-IoU (DIoU), and Complete-IoU (CIoU) \cite{zheng2022enhancing} incorporate spatial overlap, center point displacement, and aspect ratio consistency. In dense microscopy, adjacent cells share similar aspect ratios and center proximities. Recent formulations such as Shape-IoU \cite{zhang2023shapeiou} introduce shape distance scaling based on target width-to-height proportions, whereas MPDIoU \cite{ma2023mpdiou} directly minimizes the squared distance between top-left and bottom-right bounding-box corners. Their relative efficacy on densely clustered, rectangular-to-ellipsoidal plant cells remains insufficiently characterized under rigorous experimental control.
+
+\section{Dataset and Problem Formulation}
+
+\subsection{Taxonomic Context and Discrepancy Disclosure}
+The experimental evaluation is conducted on the TopoInherit plant microscopy dataset. The repository documentation contains an unresolved taxonomic identity discrepancy: textual metadata refers to the specimens as ``Arabidopsis plant lines,'' whereas the specific cultivar designations---Sansha-5 and WO115-2---are documented in phycological literature as cultivated strains of the red seaweed \textit{Pyropia haitanensis} (formerly \textit{Porphyra haitanensis}). In accordance with strict academic reporting standards, we do not arbitrarily resolve this conflict; we report the dataset as comprising high-resolution cell micrographs associated with the Sansha-5 and WO115-2 lines, noting that definitive biological assignment requires external curator confirmation.
+
+\subsection{Dataset Characteristics}
+The dataset consists of 32 high-resolution brightfield micrographs ($3840 \times 2160$ pixels) across 16 physical specimen groups (\texttt{plant\_1} to \texttt{plant\_16}), imaged at two temporal milestones (0h initial culture and 24h post-treatment). Across the 32 images, a total of 3,359 cell instances are manually delineated via polygon annotations. The original LabelMe metadata contains numeric tracking/lineage identifiers (e.g., \texttt{"1"}, \texttt{"2"}, \texttt{"34-1"}). We explicitly note that these numeric labels represent individual cell tracking indices rather than histological tissue classifications (e.g., vessel, parenchyma, fiber).
+
+\subsection{Problem Formulation}
+We formulate cell detection as a single-class object localization problem:
+\begin{equation}
+\mathcal{Y} = \{(b_i, c_i)\}_{i=1}^{M}, \quad c_i = 0 \, (\text{cell}), \quad b_i = [x_c, y_c, w, h]^T
+\end{equation}
+where $(x_c, y_c)$ denote normalized bounding-box center coordinates, and $(w, h)$ denote normalized width and height. No multi-class classification is claimed or evaluated ($n_c = 1$).
+
+\subsection{Specimen-Level Partitioning}
+To eliminate data leakage, we enforce a strict specimen-disjoint split:
+\begin{itemize}
+    \item \textbf{Training Set:} 11 specimens (\texttt{plant\_1}--\texttt{plant\_5}, \texttt{plant\_7}, \texttt{plant\_9}--\texttt{plant\_13}), comprising 22 micrographs, 880 tiles, and 5,007 cell instances.
+    \item \textbf{Validation Set:} 3 specimens (\texttt{plant\_6}, \texttt{plant\_14}, \texttt{plant\_15}), comprising 6 micrographs, 240 tiles, and 1,502 cell instances.
+    \item \textbf{Held-Out Test Set:} 2 specimens (\texttt{plant\_8}, \texttt{plant\_16}), comprising 4 micrographs, 160 tiles, and 1,247 cell instances.
+\end{itemize}
+The intersection of physical specimens between any two partitions is strictly empty:
+\begin{equation}
+\mathcal{S}_{\text{train}} \cap \mathcal{S}_{\text{val}} = \emptyset, \quad \mathcal{S}_{\text{train}} \cap \mathcal{S}_{\text{test}} = \emptyset, \quad \mathcal{S}_{\text{val}} \cap \mathcal{S}_{\text{test}} = \emptyset
+\end{equation}
+
+\subsection{High-Resolution Tiling Pipeline}
+Directly resizing $3840 \times 2160$ micrographs to $640 \times 640$ induces an extreme downsampling factor ($6\times$), reducing micro-scale cell instances ($20 \times 20$ pixels) to sub-pixel or near-aliased blobs ($3.3 \times 3.3$ pixels). To preserve spatial fidelity, we implement a uniform sliding-window tiling strategy:
+\begin{itemize}
+    \item Tile dimensions: $640 \times 640$ pixels.
+    \item Step size: $480$ pixels (stride overlap factor: 0.25).
+    \item Minimum visible area fraction: $\alpha_{\text{min}} = 0.30$. Polygon boundaries intersecting tile edges are clipped to the bounding frame; instances retaining less than 30\% of their original area are pruned to avoid training on truncated edge artifacts.
+\end{itemize}
+
+\section{Proposed Experimental Framework}
+We formulate a modular ablation framework spanning seven primary evaluated configurations (E1--E5b, E8), with two architectural variants (E6, E7) intentionally excluded per protocol.
+
+\subsection{E1 --- Stock YOLOv8n Baseline}
+The baseline uses standard YOLOv8n with a CSPDarknet backbone and a PANet feature neck. Spatial features are extracted at strides 8 ($P_3$, $80 \times 80$), 16 ($P_4$, $40 \times 40$), and 32 ($P_5$, $20 \times 20$). Bounding-box regression is supervised using Complete-IoU (CIoU) and Distribution Focal Loss (DFL).
+
+\subsection{E2 --- Stride-4 ($P_2$) Detection Head}
+To preserve ultra-fine spatial resolution, E2 incorporates an additional low-level feature tap from backbone stage 2 ($C_2$, stride 4, $160 \times 160$ resolution). The neck is extended with an extra top-down and bottom-up pathway, delivering four multiscale feature maps ($P_2, P_3, P_4, P_5$) to a 4-scale decoupled detection head.
+
+\subsection{E3 --- Bidirectional FusionNeck (BiFPN Topology)}
+E3 replaces the standard PANet with a lightweight bidirectional feature network inspired by BiFPN. All intermediate channel dimensions across $P_3, P_4, P_5$ are unified to $C = 128$. Lateral skip connections bypass the top-down pathway to fuse raw backbone features directly into the bottom-up aggregation nodes using learnable fast-normalized fusion weights:
+\begin{equation}
+O = \sum_i \frac{w_i}{\epsilon + \sum_j w_j} \cdot I_i, \quad w_i \ge 0
+\end{equation}
+where $I_i$ are input feature maps, and $w_i$ are ReLU-constrained learnable scalars. This architecture eliminates redundant intermediate convolutions, significantly reducing parameter count and FLOPs.
+
+\subsection{E4 --- Auxiliary Boundary Supervision (BoundaryHead)}
+E4 integrates an auxiliary convolution head branched from the high-resolution $P_3$ feature map during training. The auxiliary head predicts a continuous binary cell-boundary distance mask, supervised via Binary Cross-Entropy (BCE) loss against rasterized polygon ground-truth boundaries. Crucially, the BoundaryHead is \textbf{train-only}: all auxiliary convolution weights ($18,529$ parameters) are detached and pruned prior to model serialization, incurring exactly zero parameter or latency overhead during inference.
+
+\subsection{E5a \& E5b --- Bounding-Box Regression Loss Variants}
+Retaining the exact E1 architecture, we substitute the standard CIoU loss:
+\begin{enumerate}
+    \item \textbf{E5a (Shape-IoU):} Introduces shape and scale deviation penalties based on width/height ratios:
+    \begin{equation}
+    \mathcal{L}_{\text{Shape-IoU}} = 1 - \text{IoU} + \mathcal{R}_{\text{shape}}
+    \end{equation}
+    where $\mathcal{R}_{\text{shape}}$ weights the relative deviation of box dimensions against the ground truth, emphasizing aspect ratio alignment in dense rectangular cells.
+    \item \textbf{E5b (MPDIoU):} Directly penalizes the normalized Euclidean distance between the top-left $(x_1, y_1)$ and bottom-right $(x_2, y_2)$ bounding-box corners:
+    \begin{align}
+    d_1^2 &= (x_1^{\text{pred}} - x_1^{\text{gt}})^2 + (y_1^{\text{pred}} - y_1^{\text{gt}})^2 \\
+    d_2^2 &= (x_2^{\text{pred}} - x_2^{\text{gt}})^2 + (y_2^{\text{pred}} - y_2^{\text{gt}})^2 \\
+    \mathcal{L}_{\text{MPDIoU}} &= 1 - \text{IoU} + \frac{d_1^2}{w_c^2 + h_c^2} + \frac{d_2^2}{w_c^2 + h_c^2}
+    \end{align}
+    where $w_c, h_c$ denote the dimensions of the minimum enclosing bounding box.
+\end{enumerate}
+
+\subsection{E8 --- Full Combined Model}
+E8 unifies the high-resolution $P_2$ stride-4 head, the Bidirectional FusionNeck, the auxiliary BoundaryHead, and Shape-IoU regression loss into a single composite architecture.
+
+\subsection{Explicit Exclusion of E6 and E7}
+To maintain experimental integrity, we explicitly report that two preliminary conceptual variants---E6 (a post-hoc ContextRefineClassifier) and E7 (a DCNv2 deformable convolution backbone)---were \textbf{SKIPPED} and not trained on real micrographs. We present no synthetic or fabricated metrics for E6 or E7.
+
+\section{Mathematical Formulation}
+
+\subsection{Total Multi-Task Loss Formulation}
+The base network is trained via a multi-task objective combining classification, bounding-box regression, and distribution focal loss:
+\begin{equation}
+\mathcal{L}_{\text{total}} = \lambda_{\text{cls}} \mathcal{L}_{\text{cls}} + \lambda_{\text{box}} \mathcal{L}_{\text{box}} + \lambda_{\text{dfl}} \mathcal{L}_{\text{dfl}} + \lambda_{\text{aux}} \mathcal{L}_{\text{aux}}
+\end{equation}
+where $\lambda_{\text{cls}} = 0.5$, $\lambda_{\text{box}} = 7.5$, $\lambda_{\text{dfl}} = 1.5$, and $\lambda_{\text{aux}} = 0.25$ (active only during E4 and E8 training; $\lambda_{\text{aux}} = 0$ for all other stages).
+
+\subsection{Complete-IoU (CIoU) Loss}
+\begin{align}
+\mathcal{L}_{\text{CIoU}} &= 1 - \text{IoU} + \frac{\rho^2(b, b^{\text{gt}})}{c^2} + \alpha v \\
+v &= \frac{4}{\pi^2} \left( \arctan \frac{w^{\text{gt}}}{h^{\text{gt}}} - \arctan \frac{w}{h} \right)^2 \\
+\alpha &= \frac{v}{(1 - \text{IoU}) + v}
+\end{align}
+Here, $\rho(\cdot)$ is Euclidean distance between box centroids, and $c$ is the diagonal length of the smallest enclosing box.
+
+\subsection{Shape-IoU Formulation}
+Shape-IoU scales the coordinate offsets by dynamic shape factors $hh$ and $ww$:
+\begin{align}
+ww &= \frac{2 \cdot (w^{\text{gt}})^{\text{scale}}}{(w^{\text{gt}})^{\text{scale}} + (h^{\text{gt}})^{\text{scale}}}, \quad hh = \frac{2 \cdot (h^{\text{gt}})^{\text{scale}}}{(w^{\text{gt}})^{\text{scale}} + (h^{\text{gt}})^{\text{scale}}} \\
+\Omega &= ww \cdot \frac{(x_c - x_c^{\text{gt}})^2}{c_w^2} + hh \cdot \frac{(y_c - y_c^{\text{gt}})^2}{c_h^2} \\
+\mathcal{R}_{\text{shape}} &= \Omega + \frac{\left(1 - e^{-(w - w^{\text{gt}})/w^{\text{gt}}}\right)^2}{2} + \frac{\left(1 - e^{-(h - h^{\text{gt}})/h^{\text{gt}}}\right)^2}{2} \\
+\mathcal{L}_{\text{Shape-IoU}} &= 1 - \text{IoU} + \mathcal{R}_{\text{shape}}
+\end{align}
+
+\subsection{Evaluation Metrics}
+Precision ($P$), Recall ($R$), and $F_1$ score are evaluated at a fixed operational confidence threshold $\tau = 0.25$:
+\begin{equation}
+P = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad R = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad F_1 = \frac{2 \cdot P \cdot R}{P + R}
+\end{equation}
+Mean Average Precision (mAP) is computed by integrating the precision-recall curve across an exhaustive recall sweep under a low detection threshold $\tau = 0.001$:
+\begin{equation}
+\text{mAP} = \int_{0}^{1} p(r) \, dr
+\end{equation}
+where mAP50 evaluates at $\text{IoU} = 0.50$, and mAP50-95 averages across $\text{IoU} \in [0.50, 0.95]$ in increments of $0.05$.
+
+\section{Experimental Setup}
+
+\subsection{Training Hyperparameters and Hardware}
+All models were trained from compatible pretrained YOLOv8n weights on an isolated workstation:
+\begin{itemize}
+    \item \textbf{GPU:} NVIDIA GeForce RTX 3050 Laptop GPU (4 GB GDDR6 VRAM, TGP 35--80 W).
+    \item \textbf{Environment:} Python 3.12.10, PyTorch 2.6.0+cu124, Ultralytics 8.4.182, CUDA 12.4.
+    \item \textbf{Hyperparameters:} Epochs = 50, Early stopping patience = 20 epochs, Batch size = 16, Image resolution = $640 \times 640$, Optimizer = SGD (initial $\text{lr} = 0.01$, momentum = 0.937, weight decay = 0.0005), Automatic Mixed Precision (AMP) = True, Deterministic random seed = 42.
+\end{itemize}
+
+\subsection{Inference Benchmarking Protocol}
+To guarantee publication-grade hardware characterization, we measured inference latency using raw forward passes on CUDA event timers across 5 interleaved repeats (100 warm-up runs, 300 timed iterations per model). All measurements exclude Non-Maximum Suppression (NMS) to isolate architectural compute differences.
+
+\begin{table*}[t]
+\centering
+\caption{Single-Class Plant Cell Detection Performance and Computational Complexity on the Held-Out Test Set (160 tiles, 1,247 instances, $640 \times 640$). Precision, Recall, and $F_1$ are evaluated at operational threshold $\tau=0.25$; mAP is evaluated at standard curve-sweep threshold $\tau=0.001$.}
+\label{tab:master_results}
+\small
+\begin{tabular}{llcccccccccc}
+\toprule
+\textbf{Stage} & \textbf{Architecture Description} & \textbf{Params (Inf)} & \textbf{GFLOPs} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{mAP50} & \textbf{mAP50-95} & \textbf{Latency (ms)} & \textbf{FPS} & \textbf{VRAM (MB)} \\
+ & & \textbf{(Count)} & \textbf{(@640)} & \textbf{($\tau=0.25$)} & \textbf{($\tau=0.25$)} & \textbf{($\tau=0.25$)} & \textbf{($\tau=0.001$)} & \textbf{($\tau=0.001$)} & \textbf{(FP16)} & \textbf{(FP16)} & \\
+\midrule
+E1 & Stock YOLOv8n baseline & 3,011,043 & 8.1942 & 0.4131 & \textbf{0.5646} & 0.4771 & 0.4846 & 0.4247 & 11.08 & 90.3 & 257.2 \\
+E2 & P2 stride-4 detection head & 2,926,692 & 12.3582 & 0.6141 & 0.4058 & 0.4887 & 0.5756 & 0.5007 & 13.80 & 72.5 & 421.5 \\
+E3 & Bidirectional FusionNeck (BiFPN) & \textbf{2,019,061} & \textbf{7.2822} & 0.6560 & 0.3929 & \textbf{0.4915} & 0.6210 & 0.5368 & \textbf{10.92} & \textbf{91.5} & \textbf{256.7} \\
+E4 & Auxiliary BoundaryHead$^{\dagger}$ & 3,011,043 & 8.1942 & \textbf{0.9038} & 0.0377 & 0.0724 & 0.5422 & 0.4581 & 11.07 & 90.3 & 256.2 \\
+E5a & Shape-IoU regression loss & 3,011,043 & 8.1942 & 0.6954 & 0.3039 & 0.4230 & \textbf{0.6324} & \textbf{0.5579} & 11.08 & 90.3 & 257.2 \\
+E5b & MPDIoU regression loss & 3,011,043 & 8.1942 & 0.6646 & 0.0858 & 0.1520 & 0.4436 & 0.3814 & 11.08 & 90.3 & 257.2 \\
+E8 & Full combined model$^{\ddagger}$ & 3,052,662 & 12.7959 & 0.7317 & 0.3609 & 0.4834 & 0.6043 & 0.5042 & 16.69 & 59.9 & 422.0 \\
+\bottomrule
+\multicolumn{12}{l}{\footnotesize $^{\dagger}$E4 contains 18,529 train-only parameters pruned prior to inference. $^{\ddagger}$E8 contains 9,313 train-only parameters pruned prior to inference. E6 and E7 were SKIPPED.}
+\end{tabular}
+\end{table*}
+
+\section{Results and Ablation Analysis}
+
+\subsection{Overall Detection Performance}
+The baseline stock YOLOv8n (E1) achieves an mAP50 of 0.4846 and mAP50-95 of 0.4247 at $\tau=0.001$. At the operational operating threshold of $\tau = 0.25$, E1 yields a precision of 0.4131 and recall of 0.5646 ($F_1 = 0.4771$). While E1 demonstrates robust recall, its relatively low precision reflects substantial false-positive detections caused by ambiguous background textures and shared plant cell walls.
+
+\subsection{Finding 1: Bidirectional FusionNeck (E3) Achieves Pareto-Optimal Efficiency}
+E3 replaces the standard PANet with our lightweight bidirectional topology. As detailed in Table~\ref{tab:master_results}, E3 reduces inference parameters by \textbf{32.9\%} (down to 2.02M) and GFLOPs by \textbf{11.1\%} (down to 7.28), while achieving the highest $F_1$ score (\textbf{0.4915}) at $\tau=0.25$ and boosting mAP50 by \textbf{+0.1364} (0.6210 vs. 0.4846) at $\tau=0.001$. Latency drops to 10.92 ms, delivering 91.5 FPS. This demonstrates that standard YOLOv8 feature necks possess substantial channel and convolutional redundancy for single-class bio-imaging; cross-scale bidirectional routing preserves multi-resolution cell cues more effectively with fewer parameters.
+
+\subsection{Finding 2: Shape-IoU (E5a) Maximizes Detection Accuracy}
+Modifying only the regression loss to Shape-IoU (E5a) yields the highest detection accuracy across the entire experimental suite: \textbf{mAP50 = 0.6324} (+0.1478 over E1) and \textbf{mAP50-95 = 0.5579} (+0.1332 over E1). Because Shape-IoU alters only the backpropagated gradient during training, it incurs \textbf{zero additional inference parameters, zero FLOP increase, and identical latency (11.08 ms, 90.3 FPS)}. In contrast, MPDIoU (E5b) suffers severe performance degradation, with recall plunging to 0.0858 at $\tau=0.25$ and mAP50 dropping to 0.4436. We hypothesize that MPDIoU's direct point-distance penalty is hypersensitive to minute boundary shifts in densely packed cell mosaics, destabilizing gradient updates.
+
+\subsection{Finding 3: Precision-Recall Trade-offs in P2 Head and BoundaryHead}
+The stride-4 ($P_2$) head in E2 improves precision to 0.6141 (+0.2010 vs. E1) and mAP50 to 0.5756, confirming that high-resolution spatial maps enhance small-cell localization. However, this comes at a steep computational cost: GFLOPs surge by +50.8\% (12.36 vs. 8.19) and latency increases to 13.80 ms (72.5 FPS).
+
+The auxiliary BoundaryHead (E4) achieves an extraordinary precision of \textbf{0.9038} (+0.4907 over E1) with zero inference overhead. However, its recall at $\tau=0.25$ drops precipitously to 0.0377 ($F_1 = 0.0724$). Interestingly, when evaluated at $\tau=0.001$, E4 achieves a respectable mAP50 of 0.5422. This divergence indicates that auxiliary boundary regularization severely compresses the network's output confidence scores. Operating E4 at standard natural-image thresholds ($\tau=0.25$) discards valid predictions; it requires an operational threshold recalibration ($\tau \approx 0.05\text{--}0.10$).
+
+\subsection{Finding 4: Compound Architecture Trade-offs (E8)}
+E8 combines $P_2$, FusionNeck, BoundaryHead, and Shape-IoU. While achieving strong precision (0.7317 at $\tau=0.25$) and competitive accuracy ($\text{mAP50}=0.6043$, $\text{mAP50-95}=0.5042$), it does not surpass the lighter single-modification models (E3 mAP50 = 0.6210, E5a mAP50 = 0.6324). Furthermore, its computational burden is the highest in the suite (12.80 GFLOPs, 16.69 ms latency, 59.9 FPS, 422.0 MB VRAM). This empirical outcome demonstrates that stacking individually beneficial architectural modifications can induce gradient competition and diminishing returns without extensive joint hyperparameter re-tuning.
+
+\section{E8 Checkpoint Serialization and Method-Binding Verification}
+During initial post-training validation, E8 produced anomalously low metrics ($\text{mAP50} = 0.0165$, $P = 0.000$, $R = 0.000$). A rigorous engineering investigation identified a critical PyTorch checkpoint deserialization failure.
+
+E8's custom forward pass was dynamically bound (\texttt{\_predict\_once}) to route intermediate activations through the external FusionNeck module. When serialized via \texttt{torch.save}, dynamic python instance method bindings were dropped. Reloading the raw checkpoint caused Ultralytics to execute the default forward method, completely bypassing the FusionNeck weights and feeding unrefined tensors to the detection head. 
+
+Once the method binding was explicitly restored, E8 achieved its true verified performance ($\text{mAP50} = 0.6043$, $\text{mAP50-95} = 0.5042$, $P = 0.7317$, $R = 0.3609$). This finding highlights a crucial lesson for deep-learning practitioners: custom hybrid architectures modifying stock framework execution graphs must incorporate explicit forward-pass integrity checks post-deserialization.
+
+\begin{table*}[t]
+\centering
+\caption{Inference latency (ms per batch) and throughput (FPS) on NVIDIA GeForce RTX 3050 Laptop GPU across Batch=1 and Batch=16 ($640\times640$, NMS excluded). Values represent median $\pm$ std over 5 interleaved repeats.}
+\label{tab:compute_table}
+\small
+\begin{tabular}{l c c c c c c c c}
+\toprule
+\textbf{Stage} & \textbf{Params} & \textbf{GFLOPs} & \multicolumn{2}{c}{\textbf{Batch=1 FP32}} & \multicolumn{2}{c}{\textbf{Batch=1 FP16}} & \multicolumn{2}{c}{\textbf{Batch=16 FP16}} \\
+ & \textbf{(Inf)} & \textbf{(@640)} & \textbf{Latency (ms)} & \textbf{FPS} & \textbf{Latency (ms)} & \textbf{FPS} & \textbf{Latency (ms)} & \textbf{FPS} \\
+\midrule
+E1 & 3,011,043 & 8.19 & 9.07 $\pm$ 0.42 & 110.2 & 11.08 $\pm$ 0.12 & 90.3 & 38.30 $\pm$ 0.13 & 417.8 \\
+E2 & 2,926,692 & 12.36 & 10.58 $\pm$ 0.97 & 94.5 & 13.80 $\pm$ 0.41 & 72.5 & 62.63 $\pm$ 0.59 & 255.5 \\
+E3 & \textbf{2,019,061} & \textbf{7.28} & \textbf{9.17 $\pm$ 0.93} & \textbf{109.1} & \textbf{10.92 $\pm$ 0.13} & \textbf{91.5} & \textbf{38.93 $\pm$ 0.54} & \textbf{411.0} \\
+E4 & 3,011,043 & 8.19 & 9.02 $\pm$ 1.08 & 110.8 & 11.07 $\pm$ 0.14 & 90.3 & 38.50 $\pm$ 0.35 & 415.6 \\
+E5a & 3,011,043 & 8.19 & 9.07 $\pm$ 0.42 & 110.2 & 11.08 $\pm$ 0.12 & 90.3 & 38.30 $\pm$ 0.13 & 417.8 \\
+E5b & 3,011,043 & 8.19 & 9.07 $\pm$ 0.42 & 110.2 & 11.08 $\pm$ 0.12 & 90.3 & 38.30 $\pm$ 0.13 & 417.8 \\
+E8 & 3,052,662 & 12.80 & 13.50 $\pm$ 0.28 & 74.1 & 16.69 $\pm$ 0.25 & 59.9 & 73.17 $\pm$ 0.59 & 218.7 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Computational Efficiency and Pareto Analysis}
+Edge deployments in microscopy workstations require balancing detection throughput against memory footprints. Table~\ref{tab:compute_table} itemizes the computational profiling on our RTX 3050 Laptop GPU.
+
+In batch=1 FP16 inference, E3 exhibits the lowest latency (10.92 ms) and highest throughput (91.5 FPS). In batch=16 FP16 (GPU-bound regime), E3 processes batches in 38.93 ms, achieving an aggregate throughput of 411.0 FPS. Crucially, all evaluated models maintain peak runtime memory footprints well below 500 MB (256.2 MB for E4 to 422.0 MB for E8), confirming that high-resolution plant-cell detection via tiled YOLOv8 is fully feasible on entry-level 4 GB edge GPUs.
+
+\section{Discussion}
+\subsection{Measured Results vs. Interpretations}
+We strictly delineate empirical measurements from plausible interpretations:
+\begin{itemize}
+    \item \textbf{Directly Measured:} E3 reduces parameters by 32.9\% and GFLOPs by 11.1\% while reaching $F_1=0.4915$. Shape-IoU (E5a) increases mAP50 by +0.1478 without adding parameters or FLOPs.
+    \item \textbf{Reasonable Interpretation:} The superior performance of E3 suggests that standard YOLOv8n feature necks contain redundant convolutional filters for single-class cell detection.
+    \item \textbf{Hypothesis:} MPDIoU degrades on dense cell meshes due to hypersensitivity of point-distance penalties to small boundary misalignments.
+\end{itemize}
+
+\subsection{Architectural Trade-offs}
+Our results demonstrate that single-class plant cell detection does not require heavy feature extraction backbones. The success of E3 proves that lightweight bidirectional fusion with reduced channel widths (128 channels) outperforms wider standard architectures. Furthermore, the accuracy leap achieved by Shape-IoU (E5a) highlights that in dense microscopy, refining the geometric alignment penalty during loss backpropagation is vastly more cost-effective than expanding network depth or spatial resolution.
+
+\section{Limitations and Threats to Validity}
+\begin{enumerate}
+    \item \textbf{Taxonomic Ambiguity:} An internal documentation discrepancy exists regarding whether the Sansha-5 and WO115-2 lines represent \textit{Arabidopsis} or \textit{Pyropia haitanensis}. External biological confirmation is required before drawing species-specific morphological conclusions.
+    \item \textbf{Specimen Scale:} While the dataset contains 3,359 annotated cells, they originate from 16 specimens. Although our specimen-level split prevents temporal leakage between 0h and 24h observations, cross-laboratory and multi-instrument generalization remains unmeasured.
+    \item \textbf{Single-Class Scope:} The present study focuses exclusively on cell localization ($n_c = 1$). Sub-cellular organelles and histological cell types are not differentiated.
+    \item \textbf{Confidence Threshold Sensitivity:} Metrics such as Precision, Recall, and $F_1$ are highly sensitive to the operating threshold $\tau$. As observed in E4, models with compressed confidence distributions require custom threshold calibration rather than default $\tau=0.25$ cutoff rules.
+\end{enumerate}
+
+\section{Conclusion}
+This paper presented a systematic, leakage-free empirical investigation of lightweight YOLOv8 modifications for high-resolution plant cell detection under constrained GPU resources. By enforcing a strict specimen-level split, we prevented temporal memorization between serial micrographs. Our findings show that the Bidirectional FusionNeck (E3) establishes a Pareto-optimal design, eliminating nearly one-third of baseline parameters and 11\% of GFLOPs while achieving the highest $F_1$ score (0.4915) and boosting mAP50 by +0.1364. Simultaneously, Shape-IoU (E5a) maximized detection accuracy ($\text{mAP50}=0.6324$) with zero inference overhead. Finally, we demonstrated that composite multi-module stacking (E8) incurs severe computational overhead without commensurate accuracy gains, and documented the necessity of post-deserialization method verification in custom PyTorch pipelines.
+
+\begin{thebibliography}{00}
+\bibitem{jocher2023yolo} G. Jocher, A. Chaurasia, and J. Qiu, ``Ultralytics YOLOv8,'' version 8.0.0, 2023. [Online]. Available: https://github.com/ultralytics/ultralytics
+\bibitem{tan2020efficientdet} M. Tan, R. Pang, and Q. V. Le, ``EfficientDet: Scalable and Efficient Object Detection,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2020, pp. 10781--10790.
+\bibitem{li2022yolov6} C. Li et al., ``YOLOv6: A Single-Stage Object Detection Framework for Industrial Applications,'' \textit{arXiv preprint arXiv:2209.02976}, 2022.
+\bibitem{wang2023yolov7} C.-Y. Wang, A. Bochkovskiy, and H.-Y. M. Liao, ``YOLOv7: Trainable Bag-of-Freebies Sets New State-of-the-Art for Real-Time Object Detectors,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2023, pp. 7464--7475.
+\bibitem{zhang2023shapeiou} H. Zhang et al., ``Shape-IoU: More Accurate Metric Considering Bounding Box Shape and Scale,'' \textit{arXiv preprint arXiv:2312.17663}, 2023.
+\bibitem{ma2023mpdiou} M. Ma et al., ``MPDIoU: A Loss for Efficient and Accurate Bounding Box Regression,'' \textit{arXiv preprint arXiv:2307.07662}, 2023.
+\bibitem{zheng2022enhancing} Z. Zheng et al., ``Enhancing Geometric Factors in Model Learning to Surpass FCOS,'' \textit{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 44, no. 9, pp. 5022--5034, 2022.
+\bibitem{ge2021yolox} Z. Ge, S. Liu, F. Wang, Z. Li, and J. Sun, ``YOLOX: Exceeding YOLO Series in 2021,'' \textit{arXiv preprint arXiv:2107.08430}, 2021.
+\bibitem{dai2017deformable} J. Dai et al., ``Deformable Convolutional Networks,'' in \textit{Proc. IEEE Int. Conf. Comput. Vis. (ICCV)}, 2017, pp. 764--773.
+\bibitem{park2022automated} S. A. Park et al., ``Automated Cell Tracking and Morphological Phenotyping in Plant Microscopic Sequences,'' \textit{Plant Methods}, vol. 18, no. 1, pp. 1--14, 2022.
+\end{thebibliography}
+
+\end{document}

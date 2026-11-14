@@ -1,0 +1,8 @@
+Stage,Description,mAP50,Delta_mAP50,mAP50-95,Delta_mAP50-95,Precision,Delta_P,Recall,Delta_R,F1,Delta_F1,Delta_Params,Delta_GFLOPs,Delta_Latency_ms,Delta_FPS,Delta_VRAM_MB
+E1,Stock YOLOv8n baseline (nc=1),0.3226,+0.0000,0.2857,+0.0000,0.4131,+0.0000,0.5646,+0.0000,0.4771,+0.0000,+0,+0.0000,+0.00,+0.0,+0.0
+E2,P2 stride-4 detection head (nc=1),0.3004,-0.0222,0.2667,-0.0190,0.6141,+0.2009,0.4058,-0.1588,0.4887,+0.0115,-84351,+4.1640,+2.73,-17.8,+164.3
+E3,"Bidirectional FusionNeck (BiFPN-style, 128ch, nc=1)",0.3153,-0.0073,0.2781,-0.0076,0.6560,+0.2428,0.3929,-0.1716,0.4915,+0.0143,-991982,-0.9120,-0.15,+1.2,-0.5
+E4,"Auxiliary BoundaryHead on P3 feature (train-only, nc=1)",0.0337,-0.2888,0.0310,-0.2547,0.9038,+0.4907,0.0377,-0.5269,0.0724,-0.4048,+0,+0.0000,-0.01,+0.1,-1.0
+E5a,"Shape IoU loss variant (architecture = E1, nc=1)",0.2518,-0.0707,0.2282,-0.0575,0.6954,+0.2823,0.3039,-0.2606,0.4230,-0.0541,+0,+0.0000,+0.00,+0.0,+0.0
+E5b,"MPDIoU loss variant (architecture = E1, nc=1)",0.0627,-0.2599,0.0563,-0.2293,0.6646,+0.2515,0.0858,-0.4787,0.1520,-0.3251,+0,+0.0000,+0.00,+0.0,+0.0
+E8,Full combined: P2 + E8FusionNeck + BoundaryHead + ShapeIoU + Refiner (nc=1),0.3086,-0.0140,0.2701,-0.0155,0.7317,+0.3186,0.3609,-0.2037,0.4834,+0.0062,+41619,+4.6017,+5.61,-30.4,+164.8

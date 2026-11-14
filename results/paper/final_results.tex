@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering
+\caption{Single-Class Plant Cell Detection Performance and Computational Complexity on the Held-Out \textit{Pyropia haitanensis} Test Set ($imgsz=640, conf=0.25, IoU=0.45$).}
+\label{tab:final_results}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llcccccccccccc}
+\toprule
+\textbf{Stage} & \textbf{Description} & \textbf{Params} & \textbf{GFLOPs} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{mAP50} & \textbf{mAP50-95} & \textbf{Cell AP50} & \textbf{Cell AP50-95} & \textbf{Latency (ms)} & \textbf{FPS} & \textbf{VRAM (MB)} \\
+\midrule
+E1 & Stock YOLOv8n baseline (nc=1) & 3,011,043 & 8.1942 & 0.4131 & 0.5646 & 0.4771 & 0.3226 & 0.2857 & 0.3226 & 0.2857 & 11.08 & 90.3 & 257.2 \\
+E2 & P2 stride-4 detection head (nc=1) & 2,926,692 & 12.3582 & 0.6141 & 0.4058 & 0.4887 & 0.3004 & 0.2667 & 0.3004 & 0.2667 & 13.80 & 72.5 & 421.5 \\
+E3 & Bidirectional FusionNeck (BiFPN-style, 128ch, nc=1) & 2,019,061 & 7.2822 & 0.6560 & 0.3929 & 0.4915 & 0.3153 & 0.2781 & 0.3153 & 0.2781 & 10.92 & 91.5 & 256.7 \\
+E4 & Auxiliary BoundaryHead on P3 feature (train-only, nc=1) & 3,011,043 & 8.1942 & 0.9038 & 0.0377 & 0.0724 & 0.0337 & 0.0310 & 0.0337 & 0.0310 & 11.07 & 90.3 & 256.2 \\
+E5a & Shape IoU loss variant (architecture = E1, nc=1) & 3,011,043 & 8.1942 & 0.6954 & 0.3039 & 0.4230 & 0.2518 & 0.2282 & 0.2518 & 0.2282 & 11.08 & 90.3 & 257.2 \\
+E5b & MPDIoU loss variant (architecture = E1, nc=1) & 3,011,043 & 8.1942 & 0.6646 & 0.0858 & 0.1520 & 0.0627 & 0.0563 & 0.0627 & 0.0563 & 11.08 & 90.3 & 257.2 \\
+E6 & ContextRefineClassifier (post-hoc refiner, nc=1) & - & - & - & - & - & - & - & - & - & - & - & - \\
+E7 & DCNv2 deformable conv backbone (nc=1) & - & - & - & - & - & - & - & - & - & - & - & - \\
+E8 & Full combined: P2 + E8FusionNeck + BoundaryHead + ShapeIoU + Refiner (nc=1) & 3,052,662 & 12.7959 & 0.7317 & 0.3609 & 0.4834 & 0.3086 & 0.2701 & 0.3086 & 0.2701 & 16.69 & 59.9 & 422.0 \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

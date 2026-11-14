@@ -184,64 +184,70 @@ def _count_params(m: nn.Module) -> int:
 
 
 # ---------------------------------------------------------------------------
-# Individual stage builders (ALL WITH nc=3)
+# Individual stage builders (supports nc=1 and nc=3)
 # ---------------------------------------------------------------------------
 
-def _build_e1() -> Tuple[Any, StageManifest]:
+def _build_e1(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
     params = _count_params(model.model)
-    # Assert E1 base parameter count matches built nc=3 model (3,011,433)
-    assert params == 3011433, f"E1 params expected 3,011,433, got {params}"
+    expected = 3011043 if nc == 1 else 3011433
+    assert params == expected, f"E1 params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E1",
-        description="Stock YOLOv8n baseline (nc=3)",
+        description=f"Stock YOLOv8n baseline (nc={nc})",
         builds_on="--",
-        nc=NC,
+        nc=nc,
         iou_loss="CIoU",
     )
     return model, m
 
 
-def _build_e2() -> Tuple[Any, StageManifest]:
+def _build_e2(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_p2_nc3.yaml")
+    cfg = "configs/yolov8n_p2_nc1.yaml" if nc == 1 else "configs/yolov8n_p2_nc3.yaml"
+    model = YOLO(cfg)
     params = _count_params(model.model)
-    assert params == 2926956, f"E2 params expected 2,926,956, got {params}"
+    expected = 2926692 if nc == 1 else 2926956
+    assert params == expected, f"E2 params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E2",
-        description="P2 stride-4 detection head (nc=3)",
+        description=f"P2 stride-4 detection head (nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         p2_head=True,
         iou_loss="CIoU",
     )
     return model, m
 
 
-def _build_e3() -> Tuple[Any, StageManifest]:
+def _build_e3(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
     inject_fusion_neck(model.model, num_repeats=2, out_channels=128)
     params = _count_params(model.model)
-    assert params == 2019451, f"E3 params expected 2,019,451, got {params}"
+    expected = 2019061 if nc == 1 else 2019451
+    assert params == expected, f"E3 params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E3",
-        description="Bidirectional FusionNeck (BiFPN-style, 128ch, nc=3)",
+        description=f"Bidirectional FusionNeck (BiFPN-style, 128ch, nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         fusion_neck=True,
         iou_loss="CIoU",
     )
     return model, m
 
 
-def _build_e4() -> Tuple[Any, StageManifest]:
+def _build_e4(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
 
     # Wrap layer 15 (P3 C2f feature) with BoundaryHead
     b_head = BoundaryHead(in_channels=64, hidden_channels=32, alpha=0.5)
@@ -252,13 +258,14 @@ def _build_e4() -> Tuple[Any, StageManifest]:
     model.model.model[15] = wrapper
 
     params = _count_params(model.model)
-    assert params == 3029962, f"E4 params expected 3,029,962, got {params}"
+    expected = 3029572 if nc == 1 else 3029962
+    assert params == expected, f"E4 params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E4",
-        description="Auxiliary BoundaryHead on P3 feature (train-only, nc=3)",
+        description=f"Auxiliary BoundaryHead on P3 feature (train-only, nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         boundary_head=True,
         boundary_head_train_only=True,
         iou_loss="CIoU",
@@ -266,60 +273,67 @@ def _build_e4() -> Tuple[Any, StageManifest]:
     return model, m
 
 
-def _build_e5a() -> Tuple[Any, StageManifest]:
+def _build_e5a(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
     params = _count_params(model.model)
-    assert params == 3011433, f"E5a params expected 3,011,433, got {params}"
+    expected = 3011043 if nc == 1 else 3011433
+    assert params == expected, f"E5a params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E5a",
-        description="Shape IoU loss variant (architecture = E1, nc=3)",
+        description=f"Shape IoU loss variant (architecture = E1, nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         iou_loss="ShapeIoU",
     )
     return model, m
 
 
-def _build_e5b() -> Tuple[Any, StageManifest]:
+def _build_e5b(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
     params = _count_params(model.model)
-    assert params == 3011433, f"E5b params expected 3,011,433, got {params}"
+    expected = 3011043 if nc == 1 else 3011433
+    assert params == expected, f"E5b params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E5b",
-        description="MPDIoU loss variant (architecture = E1, nc=3)",
+        description=f"MPDIoU loss variant (architecture = E1, nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         iou_loss="MPDIoU",
     )
     return model, m
 
 
-def _build_e6() -> Tuple[Any, StageManifest]:
+def _build_e6(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
     clf = ContextRefineClassifier(input_size=64, margin_ratio=0.25)
     model._refiner = clf
     params = _count_params(model.model)
-    assert params == 3011433, f"E6 detector params expected 3,011,433, got {params}"
+    expected = 3011043 if nc == 1 else 3011433
+    assert params == expected, f"E6 detector params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E6",
-        description="E1 detector + ContextRefineClassifier (post-hoc, nc=3)",
+        description=f"E1 detector + ContextRefineClassifier (post-hoc, nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         refiner=True,
         iou_loss="CIoU",
     )
     return model, m
 
 
-def _build_e7() -> Tuple[Any, StageManifest]:
+def _build_e7(nc: int = 1) -> Tuple[Any, StageManifest]:
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_nc3.yaml")
+    cfg = "configs/yolov8n_nc1.yaml" if nc == 1 else "configs/yolov8n_nc3.yaml"
+    model = YOLO(cfg)
     replace_conv_with_dcn(model.model, layer_indices=[6, 8])
 
     dcn_count = sum(1 for m in model.model.modules() if isinstance(m, DeformableConv2d))
@@ -327,13 +341,14 @@ def _build_e7() -> Tuple[Any, StageManifest]:
         raise AssertionError(f"E7: expected exactly 3 DeformableConv2d layers, found {dcn_count}.")
 
     params = _count_params(model.model)
-    assert params == 3073722, f"E7 params expected 3,073,722, got {params}"
+    expected = 3073332 if nc == 1 else 3073722
+    assert params == expected, f"E7 params expected {expected:,}, got {params:,}"
 
     mf = StageManifest(
         stage_id="E7",
-        description="DCNv2 in last 2 C2f backbone blocks (3 layers, nc=3)",
+        description=f"DCNv2 in last 2 C2f backbone blocks (3 layers, nc={nc})",
         builds_on="E1",
-        nc=NC,
+        nc=nc,
         dcn=True,
         dcn_layer_count=dcn_count,
         iou_loss="CIoU",
@@ -341,10 +356,11 @@ def _build_e7() -> Tuple[Any, StageManifest]:
     return model, mf
 
 
-def _build_e8() -> Tuple[Any, StageManifest]:
+def _build_e8(nc: int = 1) -> Tuple[Any, StageManifest]:
     """E8: P2 head + E8FusionNeck + BoundaryHead + ShapeIoU + ContextRefiner."""
     from ultralytics import YOLO
-    model = YOLO("configs/yolov8n_p2_nc3.yaml")
+    cfg = "configs/yolov8n_p2_nc1.yaml" if nc == 1 else "configs/yolov8n_p2_nc3.yaml"
+    model = YOLO(cfg)
 
     # Inject E8FusionNeck for P3/P4/P5
     fn = E8FusionNeck(in_ch=(64, 128, 256), inner_ch=128, num_repeats=2)
@@ -372,13 +388,14 @@ def _build_e8() -> Tuple[Any, StageManifest]:
         "E8: DCN should NOT be present in E8"
 
     params = _count_params(model.model)
-    assert params == 3062239, f"E8 params expected 3,062,239, got {params}"
+    expected = 3061975 if nc == 1 else 3062239
+    assert params == expected, f"E8 params expected {expected:,}, got {params:,}"
 
     m = StageManifest(
         stage_id="E8",
-        description="Full combined: P2 + E8FusionNeck + BoundaryHead + ShapeIoU + Refiner (nc=3)",
+        description=f"Full combined: P2 + E8FusionNeck + BoundaryHead + ShapeIoU + Refiner (nc={nc})",
         builds_on="combined",
-        nc=NC,
+        nc=nc,
         p2_head=True,
         fusion_neck=True,
         boundary_head=True,
@@ -407,14 +424,14 @@ _BUILDERS = {
 # Public API
 # ---------------------------------------------------------------------------
 
-def build_stage(stage_id: str) -> Tuple[Any, StageManifest]:
+def build_stage(stage_id: str, nc: int = 1) -> Tuple[Any, StageManifest]:
     """Build a model for the given stage and return (model, manifest)."""
     if stage_id not in _BUILDERS:
         raise ValueError(f"Unknown stage '{stage_id}'. Valid: {list(_BUILDERS)}")
 
     print(f"\n{'-'*60}")
-    print(f"  Building {stage_id} ...")
-    model, manifest = _BUILDERS[stage_id]()
+    print(f"  Building {stage_id} (nc={nc}) ...")
+    model, manifest = _BUILDERS[stage_id](nc=nc)
 
     total_params = _count_params(model.model)
 

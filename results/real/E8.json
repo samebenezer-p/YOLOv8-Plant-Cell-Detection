@@ -1,0 +1,52 @@
+{
+  "stage": "E8",
+  "description": "Full combined: P2 + E8FusionNeck + BoundaryHead + ShapeIoU + Refiner (nc=1)",
+  "status": "COMPLETED",
+  "checkpoint": "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E8\\weights\\best.pt",
+  "params_inference": 3052662,
+  "params_total": 3061975,
+  "gflops": 12.7959,
+  "train_batch_size": 16,
+  "train_duration_sec": 3752.0438096523285,
+  "test_metrics": {
+    "precision": 0.7317073170731707,
+    "recall": 0.3608660785886127,
+    "F1": 0.4833512352309345,
+    "mAP50": 0.30855364177430483,
+    "mAP50_95": 0.2701297576579841,
+    "cell_AP50": 0.30855364177430483,
+    "cell_AP50_95": 0.2701297576579841,
+    "mAP50_conf0.001": 0.6043232811370219,
+    "mAP50_95_conf0.001": 0.5042217646549298,
+    "unbound_checkpoint_mAP50_conf0.001": 0.0165,
+    "unbound_checkpoint_P_conf0.25": 0.0,
+    "val_save_dir": "runs/detect/val-45"
+  },
+  "benchmark": {
+    "b1_fp32_latency_ms": 13.500201009114583,
+    "b1_fp32_latency_std": 0.28156466921348133,
+    "b1_fp32_fps": 74.07297115982612,
+    "b1_fp32_vram_mb": 145.892578125,
+    "b1_fp16_latency_ms": 16.689036458333334,
+    "b1_fp16_latency_std": 0.24507937627998538,
+    "b1_fp16_fps": 59.91957669315715,
+    "b1_fp16_vram_mb": 89.69677734375,
+    "b16_fp32_latency_ms": 120.0003515625,
+    "b16_fp32_latency_std": 1.0606503632941116,
+    "b16_fp32_fps": 133.33294270947775,
+    "b16_fp32_vram_mb": 805.59716796875,
+    "b16_fp16_latency_ms": 73.17305989583333,
+    "b16_fp16_latency_std": 0.5884541389935096,
+    "b16_fp16_fps": 218.6597092260055,
+    "b16_fp16_vram_mb": 422.00146484375
+  },
+  "representative_predictions": [
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E8\\representative_predictions\\test_pred_sample_1_250102-4-1_T0_tile0000.jpg",
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E8\\representative_predictions\\test_pred_sample_2_250102-4-1_T24_tile0000.jpg",
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E8\\representative_predictions\\test_pred_sample_3_B6_0808_tile0000.jpg",
+    "E:\\Yolov8_Plant_Cell_Detection\\runs\\detect\\results\\real\\E8\\representative_predictions\\test_pred_sample_4_B6_0809_tile0000.jpg"
+  ],
+  "epoch_boundary_losses": [],
+  "verification_status": "VERIFIED_WITH_INFERENCE_BINDING_FIX",
+  "checkpoint_serialization_note": "Ultralytics torch.save dropped dynamic instance method _predict_once. Without explicit re-binding of _make_e8_predict_once(fusion_neck), inference bypassed fusion_neck, causing near-zero confidence (mAP50=0.0165 at 0.001, P=0 at 0.25). When properly bound to fusion_neck, E8 achieves mAP50=0.6043 at conf=0.001 and P=0.7317, R=0.3609, F1=0.4834, mAP50=0.3086 at conf=0.25."
+}

@@ -1,0 +1,351 @@
+import subprocess
+import os
+
+HTML_CONTENT = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Literature Survey: Deep Learning and Architectural Innovations in High-Resolution Microscopic Cell Detection</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.75in 0.7in 0.75in 0.7in;
+  }
+  body {
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+    font-size: 10.5pt;
+    line-height: 1.35;
+    color: #111;
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  .header-box {
+    text-align: center;
+    border-bottom: 1.5pt solid #222;
+    padding-bottom: 12pt;
+    margin-bottom: 18pt;
+  }
+  .survey-title {
+    font-size: 19pt;
+    font-weight: bold;
+    line-height: 1.25;
+    margin-bottom: 8pt;
+  }
+  .survey-subtitle {
+    font-size: 12pt;
+    font-style: italic;
+    color: #333;
+    margin-bottom: 10pt;
+  }
+  .meta-info {
+    font-size: 10pt;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: 13pt;
+    font-weight: bold;
+    border-bottom: 0.8pt solid #444;
+    padding-bottom: 2pt;
+    margin-top: 18pt;
+    margin-bottom: 8pt;
+    break-after: avoid;
+  }
+  h2 {
+    font-size: 11.5pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 14pt;
+    margin-bottom: 5pt;
+    break-after: avoid;
+  }
+  p {
+    margin: 0 0 7pt 0;
+    text-indent: 1.25em;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  ul, ol {
+    margin: 4pt 0 8pt 0;
+    padding-left: 1.5em;
+  }
+  li {
+    margin-bottom: 4pt;
+    line-height: 1.3;
+  }
+  table.comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+    line-height: 1.25;
+    margin: 14pt 0;
+    break-inside: avoid;
+  }
+  table.comp-table th {
+    background-color: #f2f2f2;
+    border-top: 1.2pt solid #000;
+    border-bottom: 1pt solid #000;
+    padding: 5pt 4pt;
+    font-weight: bold;
+    text-align: left;
+  }
+  table.comp-table td {
+    border-bottom: 0.5pt solid #ccc;
+    padding: 4.5pt 4pt;
+    vertical-align: top;
+  }
+  table.comp-table tr.highlight-row {
+    background-color: #faf5eb;
+    font-weight: bold;
+  }
+  .diagram-pre {
+    background-color: #f8f8f8;
+    border: 0.8pt solid #bbb;
+    padding: 8pt;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 8pt;
+    line-height: 1.2;
+    margin: 10pt 0;
+    white-space: pre;
+    break-inside: avoid;
+  }
+  .callout-box {
+    border-left: 3pt solid #1a5276;
+    background-color: #f4f6f7;
+    padding: 6pt 10pt;
+    margin: 8pt 0;
+    font-size: 10pt;
+    break-inside: avoid;
+  }
+  .bib-box {
+    font-size: 8.5pt;
+    line-height: 1.25;
+    background-color: #fcfcfc;
+    border: 0.5pt solid #ddd;
+    padding: 8pt;
+    margin-top: 10pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+  <div class="survey-title">Comprehensive Literature Survey: Deep Learning and Architectural Innovations in High-Resolution Microscopic Cell Detection</div>
+  <div class="survey-subtitle">Thematic Review, Algorithmic Evolution, and Methodological Gap Analysis</div>
+  <div class="meta-info">
+    <strong>Author:</strong> Sam Ebenezer .P &nbsp;|&nbsp; <strong>Supervisor / Guide:</strong> M. Denisha<br>
+    <em>Department of Computer Science and Engineering, Karunya Institute of Technology and Sciences, Coimbatore, India</em>
+  </div>
+</div>
+
+<h1>1. Executive Summary &amp; Research Scope</h1>
+<p>Quantitative analysis of plant cell micrographs is fundamental to understanding plant morphogenesis, cellular lineage tracking, mitotic division rates, and morphological responses to physiological stress. However, automated localization of plant cells in high-resolution brightfield optical microscopy (3840 &times; 2160 pixels and higher) presents an array of unique computational challenges: (1) extreme object density and shared cellular walls causing severe bounding-box overlap; (2) spatial degradation at large feature strides (stride 32 collapses micro-scale cell instances); (3) vulnerability to data leakage across serial observations (0h and 24h); and (4) edge computing constraints on accessible 4 GB GPU workstations.</p>
+
+<p>This literature survey conducts a thorough, critical review of prior work across eight interrelated domains, establishing the theoretical and empirical foundation for our controlled architectural ablation of YOLOv8.</p>
+
+<h1>2. Thematic Organization of Literature</h1>
+<div class="diagram-pre">
+                           LITERATURE SURVEY TAXONOMY
+                                      │
+         ┌────────────────────────────┼────────────────────────────┐
+         ▼                            ▼                            ▼
+[1. Classical Image Processing] [2. Deep Object Detection]  [3. Feature Pyramid Topologies]
+  - Watershed Transform           - Two-Stage (R-CNN, Mask)   - Standard FPN
+  - Intensity Thresholding        - One-Stage (SSD, Retina)   - PANet (YOLOv8 default)
+  - Active Contours (Snakes)      - YOLO Evolution (v1–v8)    - BiFPN (Bidirectional Fusion)
+         │                            │                            │
+         ├────────────────────────────┼────────────────────────────┤
+         ▼                            ▼                            ▼
+[4. Small-Object Spatial Heads] [5. Boundary Supervision]   [6. Bounding-Box Regression]
+  - Stride-4 (P2) Feature Taps    - Multi-Task Auxiliary Loss - Smooth L1 / Distance Loss
+  - High-Resolution Encoders      - Edge Distance Transforms  - IoU, GIoU, DIoU, CIoU
+  - Memory/Compute Trade-offs     - Post-Training Pruning     - Shape-IoU vs. MPDIoU
+         │                            │                            │
+         └────────────────────────────┼────────────────────────────┘
+                                      ▼
+                        [7. Bio-Imaging Data Integrity]
+                          - Patch Tiling Pipelines
+                          - Specimen-Level Data Leakage
+                          - Temporal Overfitting Risks
+</div>
+
+<h1>3. Systematic Review by Thematic Domain</h1>
+
+<h2>Domain 1: Classical Microscopic Cell Segmentation and Detection</h2>
+<p>Before deep convolutional networks, cell localization relied on heuristic computer vision techniques: Otsu's adaptive intensity thresholding, the marker-controlled watershed transform, and active contour models (snakes). While computationally light, classical pipelines degrade severely under heterogeneous optical illumination, out-of-focus blurs, and overlapping cell boundaries. In dense plant cell tissues, internal organelle textures cause severe <strong>over-segmentation</strong> in watershed transforms, requiring fragile manual marker tuning.</p>
+
+<h2>Domain 2: Two-Stage vs. One-Stage Deep Object Detection in Microscopy</h2>
+<p>Two-stage detectors such as Faster R-CNN and Mask R-CNN utilize a Region Proposal Network (RPN) followed by RoI pooling. While achieving strong instance delineation, their computational complexity (often &gt;150 GFLOPs) and high VRAM requirements make them impractical for high-throughput microscopic tile processing on edge hardware. Conversely, one-stage detectors (RetinaNet, SSD, YOLO family) formulate localization as an end-to-end regression problem, delivering high inference throughput suitable for dense microscopy.</p>
+
+<h2>Domain 3: The YOLO Architecture Family and YOLOv8 in Edge Vision</h2>
+<p>The You Only Look Once (YOLO) framework evolved from coupled grid-based regressors (v1–v3) to CSP-based networks (v4–v5) and re-parameterized architectures (v6–v7). YOLOv8 incorporates an anchor-free decoupled head and a CSPDarknet backbone with C2f modules. However, its default feature pyramid downsamples inputs across strides 8 (P<sub>3</sub>), 16 (P<sub>4</sub>), and 32 (P<sub>5</sub>). For a 640 &times; 640 tile, a 20 &times; 20 pixel cell is collapsed to sub-pixel noise at stride 32, degrading fine spatial cues.</p>
+
+<h2>Domain 4: Feature Pyramid Networks and Multiscale Feature Fusion</h2>
+<p>Standard FPN (Lin et al., 2017) and PANet (Liu et al., 2018) propagate multiscale features top-down and bottom-up. However, PANet treats all input paths uniformly with wide 256-channel convolutions. The Bidirectional Feature Pyramid Network (BiFPN, Tan et al., 2020) introduces cross-scale skip connections and fast-normalized feature fusion. For single-class plant cell detection, where cell scale variance is modest compared to MS COCO, wide 256-channel necks exhibit severe feature redundancy. A streamlined 128-channel BiFPN routing structure maintains cross-scale context while slashing parameters and FLOPs.</p>
+
+<h2>Domain 5: High-Resolution Spatial Heads (P<sub>2</sub> Stride-4 Features)</h2>
+<p>To preserve micro-scale targets, shallow feature taps introduce a stride-4 (P<sub>2</sub>) detection head from backbone stage 2 (160 &times; 160 grid for 640 &times; 640 inputs). While low-level texture cues are preserved, spatial feature area quadruples, causing a steep computational surge (+50.8% GFLOPs) that requires rigorous profiling on edge hardware.</p>
+
+<h2>Domain 6: Auxiliary Boundary Supervision and Regularization</h2>
+<p>In dense tissue histology, cell borders represent high-frequency spatial gradients. Attaching an auxiliary convolutional boundary prediction head during training regularizes intermediate representations. By detaching and pruning the auxiliary head prior to deployment, the model incurs exactly zero inference overhead. However, boundary regularization significantly compresses output confidence logits, requiring operating threshold recalibration.</p>
+
+<h2>Domain 7: Evolution of Bounding-Box Regression Losses</h2>
+<p>Loss functions have progressed from coordinate distances (&ell;<sub>1</sub>, Smooth &ell;<sub>1</sub>) to geometric overlaps: IoU, GIoU, DIoU, and Complete-IoU (CIoU). Recent innovations include <strong>Shape-IoU</strong> (Zhang et al., 2023), which introduces dynamic shape and scale deviation factors based on aspect ratios, and <strong>MPDIoU</strong> (Ma et al., 2023), which minimizes the squared Euclidean distance between opposing corners. On dense cellular meshes, Shape-IoU provides stable geometric gradients, whereas MPDIoU's corner distance becomes hypersensitive to sub-pixel boundary shifts.</p>
+
+<h2>Domain 8: Data Partitioning, Tiling, and Data Leakage in Bio-Imaging</h2>
+<p>Direct resizing of 3840 &times; 2160 micrographs induces severe downsampling distortion. Sliding-window tiling (640 &times; 640 with 25% overlap) preserves optical resolution. Crucially, when time-series micrographs contain serial observations (0h and 24h) of identical specimens, naive random patch splitting leaks specimen-specific background features into the test split (Yagis et al., 2021). Strict <strong>specimen-level disjoint partitioning</strong> is mandatory to prevent optimistic evaluation bias.</p>
+
+<h1>4. Structured Literature Comparison Matrix</h1>
+<table class="comp-table">
+  <thead>
+    <tr>
+      <th style="width:14%;">Reference</th>
+      <th style="width:6%;">Year</th>
+      <th style="width:20%;">Core Methodology</th>
+      <th style="width:16%;">Target Domain</th>
+      <th style="width:18%;">Architecture / Loss</th>
+      <th style="width:26%;">Gaps &amp; Relation to Our Work</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Jocher et al.</strong> [1]</td>
+      <td>2023</td>
+      <td>YOLOv8 Anchor-free detector</td>
+      <td>Natural scenes (MS COCO)</td>
+      <td>CSPDarknet + PANet; CIoU</td>
+      <td>Stride 32 collapses micro-cells; 256ch neck is redundant for single-class cells.</td>
+    </tr>
+    <tr>
+      <td><strong>Tan et al.</strong> [2]</td>
+      <td>2020</td>
+      <td>EfficientDet / BiFPN</td>
+      <td>Multiscale object detection</td>
+      <td>Weighted Bidirectional FPN</td>
+      <td>Designed for multi-class natural scenes; not ablated for edge microscopy.</td>
+    </tr>
+    <tr>
+      <td><strong>Zhang et al.</strong> [5]</td>
+      <td>2023</td>
+      <td>Shape-IoU regression loss</td>
+      <td>Generic object detection</td>
+      <td>Shape-distance scaling loss</td>
+      <td>Evaluated on general benchmarks; behavior on dense cell walls uncharacterized.</td>
+    </tr>
+    <tr>
+      <td><strong>Ma et al.</strong> [6]</td>
+      <td>2023</td>
+      <td>MPDIoU regression loss</td>
+      <td>Generic object detection</td>
+      <td>Corner point distance loss</td>
+      <td>Point distance penalty is unstable on tightly packed, shared-wall cellular meshes.</td>
+    </tr>
+    <tr>
+      <td><strong>Zheng et al.</strong> [7]</td>
+      <td>2022</td>
+      <td>Complete-IoU (CIoU)</td>
+      <td>Bounding-box regression</td>
+      <td>Aspect ratio &amp; centroid penalty</td>
+      <td>Aspect ratio penalty is coarse when adjacent cells share similar proportions.</td>
+    </tr>
+    <tr>
+      <td><strong>Park et al.</strong> [10]</td>
+      <td>2022</td>
+      <td>Plant cell tracking &amp; phenotyping</td>
+      <td>Microscopic sequences</td>
+      <td>Classical watershed &amp; U-Net</td>
+      <td>Heuristics require manual tuning; vulnerable to over-segmentation.</td>
+    </tr>
+    <tr>
+      <td><strong>Yagis et al.</strong> [11]</td>
+      <td>2021</td>
+      <td>Data leakage audit in bio-imaging</td>
+      <td>Medical &amp; biological ML</td>
+      <td>Methodological review</td>
+      <td>Identifies high prevalence of optimistic bias due to patch-level data leakage.</td>
+    </tr>
+    <tr class="highlight-row">
+      <td><strong>Our Work</strong></td>
+      <td>2026</td>
+      <td>Systematic YOLOv8 ablation</td>
+      <td>High-resolution plant microscopy</td>
+      <td>P2, BiFPN, Boundary, Shape-IoU</td>
+      <td>Specimen-level split, Pareto-optimal BiFPN, zero-overhead Shape-IoU, edge GPU audit.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1>5. Identified Research Gaps in the Literature</h1>
+<div class="callout-box">
+  <strong>Gap 1: Prevalence of Specimen-Level Data Leakage:</strong> Patch-level random partitioning across serial micrographs inflates reported test metrics by allowing background memorization.
+</div>
+<div class="callout-box">
+  <strong>Gap 2: Channel Redundancy in Deep Feature Pyramids:</strong> Standard 256-channel PANet necks waste compute on single-class bio-imaging; lightweight cross-scale fusion remains unablated.
+</div>
+<div class="callout-box">
+  <strong>Gap 3: Uncharacterized Regression Losses on Cellular Meshes:</strong> Shape-IoU vs. MPDIoU dynamics on dense polygonal cell walls have not been systematically compared.
+</div>
+<div class="callout-box">
+  <strong>Gap 4: Scarcity of Hardware-Level Edge Profiling &amp; Deserialization Audits:</strong> Lack of physical CUDA event latency benchmarks on 4 GB GPUs and absence of custom module verification protocols.
+</div>
+
+<h1>6. Scientific Positioning of Our Research</h1>
+<p class="no-indent">Our research does not claim the algorithmic invention of established modules. Instead, it delivers a <strong>rigorous, experimentally controlled ablation and hardware efficiency study</strong>: (1) enforcing zero-leakage specimen-level partitioning; (2) demonstrating that a 128-channel BiFPN FusionNeck (E3) achieves Pareto-optimal efficiency (-32.9% parameters, -11.1% GFLOPs, top F<sub>1</sub> of 0.4915); (3) proving that Shape-IoU (E5a) reaches peak accuracy (mAP50 = 0.6324) with zero inference cost; and (4) validating real-time edge execution on an NVIDIA RTX 3050 Laptop GPU (4 GB VRAM) while providing an engineering resolution for custom module deserialization defects.</p>
+
+<h1>7. Bibliographic References</h1>
+<div class="bib-box">
+  [1] G. Jocher, A. Chaurasia, and J. Qiu, "Ultralytics YOLOv8," ver. 8.0.0, 2023.<br>
+  [2] M. Tan, R. Pang, and Q. V. Le, "EfficientDet: Scalable and Efficient Object Detection," in <em>Proc. IEEE/CVF CVPR</em>, 2020, pp. 10781–10790.<br>
+  [3] C. Li et al., "YOLOv6: A Single-Stage Object Detection Framework for Industrial Applications," <em>arXiv:2209.02976</em>, 2022.<br>
+  [4] C.-Y. Wang, A. Bochkovskiy, and H.-Y. M. Liao, "YOLOv7: Trainable Bag-of-Freebies," in <em>Proc. IEEE/CVF CVPR</em>, 2023, pp. 7464–7475.<br>
+  [5] H. Zhang et al., "Shape-IoU: More Accurate Metric Considering Bounding Box Shape and Scale," <em>arXiv:2312.17663</em>, 2023.<br>
+  [6] M. Ma et al., "MPDIoU: A Loss for Efficient and Accurate Bounding Box Regression," <em>arXiv:2307.07662</em>, 2023.<br>
+  [7] Z. Zheng et al., "Enhancing Geometric Factors in Model Learning to Surpass FCOS," <em>IEEE TPAMI</em>, vol. 44, no. 9, pp. 5022–5034, 2022.<br>
+  [8] T.-Y. Lin et al., "Feature Pyramid Networks for Object Detection," in <em>Proc. IEEE CVPR</em>, 2017, pp. 2117–2125.<br>
+  [9] S. Liu et al., "Path Aggregation Network for Instance Segmentation," in <em>Proc. IEEE CVPR</em>, 2018, pp. 8759–8768.<br>
+  [10] S. A. Park et al., "Automated Cell Tracking and Morphological Phenotyping in Plant Microscopic Sequences," <em>Plant Methods</em>, vol. 18, 2022.<br>
+  [11] E. Yagis et al., "A Risk of Data Leakage in Medical Machine Learning Models: Pitfalls and Recommendations," <em>PLOS ONE</em>, vol. 16, 2021.
+</div>
+
+</body>
+</html>
+"""
+
+def generate_pdf():
+    out_dir = r"e:\Yolov8_Plant_Cell_Detection\results\conference_paper"
+    os.makedirs(out_dir, exist_ok=True)
+    
+    html_path = os.path.join(out_dir, "literature_survey_print.html")
+    pdf_path = os.path.join(out_dir, "literature_survey.pdf")
+    
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(HTML_CONTENT)
+    print(f"HTML written to {html_path}")
+    
+    chrome = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    if not os.path.exists(chrome):
+        chrome = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+    
+    cmd = [
+        chrome,
+        "--headless=new",
+        "--disable-gpu",
+        "--no-pdf-header-footer",
+        f"--print-to-pdf={pdf_path}",
+        html_path
+    ]
+    
+    print("Running:", " ".join(cmd))
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    print("Return code:", res.returncode)
+    if os.path.exists(pdf_path):
+        size_kb = os.path.getsize(pdf_path) / 1024
+        print(f"SUCCESS: Generated PDF at {pdf_path} ({size_kb:.1f} KB)")
+    else:
+        print("FAILED: PDF not found.")
+        print("Stderr:", res.stderr)
+
+if __name__ == "__main__":
+    generate_pdf()

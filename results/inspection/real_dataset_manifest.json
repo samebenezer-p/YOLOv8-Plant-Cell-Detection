@@ -1,0 +1,56 @@
+{
+  "dataset_name": "Pyropia haitanensis microscopy cell dataset",
+  "resolution": "3840x2160",
+  "raw_images": 32,
+  "raw_instances": 3359,
+  "class_id": 0,
+  "class_name": "cell",
+  "nc": 1,
+  "specimen_split": {
+    "train": {
+      "specimens": [
+        "plant_1",
+        "plant_2",
+        "plant_3",
+        "plant_4",
+        "plant_5",
+        "plant_7",
+        "plant_9",
+        "plant_10",
+        "plant_11",
+        "plant_12",
+        "plant_13"
+      ],
+      "images": 22,
+      "objects": 2240,
+      "tiles": 880,
+      "tile_labels": 5007
+    },
+    "val": {
+      "specimens": [
+        "plant_6",
+        "plant_14",
+        "plant_15"
+      ],
+      "images": 6,
+      "objects": 602,
+      "tiles": 240,
+      "tile_labels": 1502
+    },
+    "test": {
+      "specimens": [
+        "plant_8",
+        "plant_16"
+      ],
+      "images": 4,
+      "objects": 517,
+      "tiles": 160,
+      "tile_labels": 1247
+    }
+  },
+  "tiling": {
+    "tile_size": 640,
+    "overlap": 0.25,
+    "min_visible_fraction": 0.3
+  }
+}

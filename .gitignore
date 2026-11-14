@@ -14,3 +14,19 @@ runs/
 # IDE
 .vscode/
 .idea/
+
+# Virtual Environments
+.venv_gpu/
+
+# Dataset and Raw Asset Directories
+data/
+real_dataset/
+images/
+labels/
+
+# Tool Artifacts and Scratch
+outputs_tool/
+
+# Model Exports
+*.onnx
+*.engine

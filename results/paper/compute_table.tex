@@ -1,0 +1,27 @@
+% GPU Inference Latency and Throughput Table
+% Device: NVIDIA GeForce RTX 3050 Laptop GPU
+% Timing: CUDA events, 100 warm-up, 300 timed passes, 5 interleaved repeats (median +- std)
+% NMS excluded, train-only parameters excluded
+\begin{table*}[t]
+\centering
+\caption{Inference latency (ms per batch) and throughput (FPS) on NVIDIA GeForce RTX 3050 Laptop GPU across Batch=1 and Batch=16 ($640\times640$, NMS excluded). Values represent median $\pm$ std over 5 interleaved repeats.}
+\label{tab:compute_complexity_rigorous}
+\small
+\begin{tabular}{l c c c c c c c c}
+\hline
+\textbf{Stage} & \textbf{Params} & \textbf{GFLOPs} & \multicolumn{2}{c}{\textbf{Batch=1 FP32}} & \multicolumn{2}{c}{\textbf{Batch=1 FP16}} & \multicolumn{2}{c}{\textbf{Batch=16 FP16}} \\
+ & \textbf{(Inf)} & & \textbf{Latency (ms)} & \textbf{FPS} & \textbf{Latency (ms)} & \textbf{FPS} & \textbf{Latency (ms)} & \textbf{FPS} \\
+\hline
+E1 & 3,011,433 & 8.20 & 9.07 $\pm$ 0.42 & 110.2 & 11.08 $\pm$ 0.12 & 90.3 & 38.30 $\pm$ 0.13 & 417.8 \\
+E2 & 2,926,956 & 12.36 & 10.58 $\pm$ 0.97 & 94.5 & 13.80 $\pm$ 0.41 & 72.5 & 62.63 $\pm$ 0.59 & 255.5 \\
+E3 & 2,019,451 & 7.28 & 9.17 $\pm$ 0.93 & 109.1 & 10.92 $\pm$ 0.13 & 91.5 & 38.93 $\pm$ 0.54 & 411.0 \\
+E4 & 3,011,433 & 8.20 & 9.02 $\pm$ 1.08 & 110.8 & 11.07 $\pm$ 0.14 & 90.3 & 38.50 $\pm$ 0.35 & 415.6 \\
+E7 & 3,073,722 & 8.34 & 10.99 $\pm$ 0.71 & 91.0 & 12.91 $\pm$ 0.22 & 77.5 & 43.21 $\pm$ 0.39 & 370.3 \\
+E8 & 3,052,926 & 12.80 & 13.50 $\pm$ 0.28 & 74.1 & 16.69 $\pm$ 0.25 & 59.9 & 73.17 $\pm$ 0.59 & 218.7 \\
+E5a & 3,011,433 & 8.20 & 9.07$^*$ & 110.2$^*$ & 11.08$^*$ & 90.3$^*$ & 38.30$^*$ & 417.8$^*$ \\
+E5b & 3,011,433 & 8.20 & 9.07$^*$ & 110.2$^*$ & 11.08$^*$ & 90.3$^*$ & 38.30$^*$ & 417.8$^*$ \\
+E6 & 3,011,433 & 8.20 & 9.07$^*$ & 110.2$^*$ & 11.08$^*$ & 90.3$^*$ & 38.30$^*$ & 417.8$^*$ \\
+\hline
+\multicolumn{9}{l}{\footnotesize $^*$E5a and E5b share identical architecture with E1; E6 detector is identical to E1 with post-hoc refinement.} \\
+\end{tabular}
+\end{table*}
